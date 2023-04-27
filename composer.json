@@ -1,5 +1,6 @@
 {
     "name": "tomasvotruba/torch",
+    "license": "sponsorware",
     "bin": [
         "bin/torch"
     ],
@@ -10,6 +11,7 @@
     "require-dev": {
         "phpstan/phpstan": "^1.10",
         "symplify/easy-coding-standard": "^11.3",
-        "rector/rector": "^0.15.25"
+        "rector/rector": "^0.15.25",
+        "phpunit/phpunit": "^10.1"
     }
 }
