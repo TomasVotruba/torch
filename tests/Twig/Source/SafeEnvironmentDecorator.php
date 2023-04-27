@@ -1,9 +1,9 @@
 <?php
 
-namespace SmokedTwigRenderer\Tests\Twig\Source;
+namespace TomasVotruba\Torch\Tests\Twig\Source;
 
-use SmokedTwigRenderer\Contract\EnvironmentDecoratorInterface;
-use SmokedTwigRenderer\ValueObject\DummyTheme;
+use TomasVotruba\Torch\Contract\EnvironmentDecoratorInterface;
+use TomasVotruba\Torch\ValueObject\DummyTheme;
 use Twig\Environment;
 use Twig\TwigFunction;
 

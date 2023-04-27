@@ -2,24 +2,22 @@
 
 declare(strict_types=1);
 
-namespace SmokedTwigRenderer\Tests\Twig;
+namespace TomasVotruba\Torch\Tests\Twig;
 
-use Ares\Tests\Helper\TestContainerFactory;
-use PHPUnit\Framework\TestCase;
-use SmokedTwigRenderer\Twig\TolerantTwigEnvironment;
-use SmokedTwigRenderer\Twig\TolerantTwigEnvironmentFactory;
+use TomasVotruba\Torch\Tests\AbstractTestCase;
+use TomasVotruba\Torch\Twig\TolerantTwigEnvironment;
+use TomasVotruba\Torch\Twig\TolerantTwigEnvironmentFactory;
 use Twig\TwigFunction;
 
-final class TolerantTwigFunctionFilterDecoratorTest extends TestCase
+final class TolerantTwigFunctionFilterDecoratorTest extends AbstractTestCase
 {
     private TolerantTwigEnvironment $tolerantTwigEnvironment;
 
     protected function setUp(): void
     {
-        $testContainerFactory = new TestContainerFactory();
-        $container = $testContainerFactory->create();
+        parent::setUp();
 
-        $tolerantTwigFactory = $container->get(TolerantTwigEnvironmentFactory::class);
+        $tolerantTwigFactory = $this->make(TolerantTwigEnvironmentFactory::class);
         $this->tolerantTwigEnvironment = $tolerantTwigFactory->create([]);
     }
 

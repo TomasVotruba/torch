@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace SmokedTwigRenderer\Command;
+namespace TomasVotruba\Torch\Command;
 
 use Illuminate\Console\Command;
 use Nette\Utils\FileSystem;
-use SmokedTwigRenderer\FileSystem\TwigFileFinder;
-use SmokedTwigRenderer\Twig\TolerantTwigEnvironmentFactory;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Throwable;
+use TomasVotruba\Torch\FileSystem\TwigFileFinder;
+use TomasVotruba\Torch\Twig\TolerantTwigEnvironmentFactory;
 
 final class RunCommand extends Command
 {

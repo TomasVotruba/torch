@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SmokedTwigRenderer\Tests\Twig\Source;
+namespace TomasVotruba\Torch\Tests\Twig\Source;
 
 final class SomeClassWithConstants
 {

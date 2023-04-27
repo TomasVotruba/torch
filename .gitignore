@@ -1,2 +1,7 @@
 /vendor
 composer.lock
+
+
+.phpunit.cache
+
+/storage/*

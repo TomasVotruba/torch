@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SmokedTwigRenderer\Exception;
+namespace TomasVotruba\Torch\Exception;
 
 use Exception;
 

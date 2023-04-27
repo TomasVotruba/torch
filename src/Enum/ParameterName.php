@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SmokedTwigRenderer\Enum;
+namespace TomasVotruba\Torch\Enum;
 
 final class ParameterName
 {

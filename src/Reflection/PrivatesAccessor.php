@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SmokedTwigRenderer\Reflection;
+namespace TomasVotruba\Torch\Reflection;
 
 use Exception;
 use ReflectionProperty;

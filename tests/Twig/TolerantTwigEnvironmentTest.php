@@ -2,30 +2,25 @@
 
 declare(strict_types=1);
 
-namespace SmokedTwigRenderer\Tests\Twig;
+namespace TomasVotruba\Torch\Tests\Twig;
 
-use Ares\Tests\Helper\TestContainerFactory;
 use Iterator;
-use PHPUnit\Framework\TestCase;
-use SmokedTwigRenderer\Twig\TolerantTwigEnvironment;
-use SmokedTwigRenderer\Twig\TolerantTwigEnvironmentFactory;
+use PHPUnit\Framework\Attributes\DataProvider;
+use TomasVotruba\Torch\Tests\AbstractTestCase;
+use TomasVotruba\Torch\Twig\TolerantTwigEnvironment;
+use TomasVotruba\Torch\Twig\TolerantTwigEnvironmentFactory;
 use Twig\Error\RuntimeError;
 
-final class TolerantTwigEnvironmentTest extends TestCase
+final class TolerantTwigEnvironmentTest extends AbstractTestCase
 {
-    /**
-     * @var TolerantTwigEnvironmentFactory
-     */
-    private $tolerantTwigEnvironmentFactory;
+    private TolerantTwigEnvironmentFactory $tolerantTwigEnvironmentFactory;
 
     protected function setUp(): void
     {
-        $testContainerFactory = new TestContainerFactory();
-        $container = $testContainerFactory->createWithConfigs([
-            __DIR__ . '/../config/test_config.php',
-        ]);
+        parent::setUp();
 
-        $this->tolerantTwigEnvironmentFactory = $container->get(TolerantTwigEnvironmentFactory::class);
+        $this->tolerantTwigEnvironmentFactory = $this->make(TolerantTwigEnvironmentFactory::class);
+        //    __DIR__ . '/../config/test_config.php',
     }
 
     public function testCreate(): void
@@ -46,11 +41,11 @@ final class TolerantTwigEnvironmentTest extends TestCase
         $tolerantTwig->render($templateFilePath);
     }
 
-    /**
-     * @dataProvider provideData()
-     */
+    #[DataProvider('provideData')]
     public function testRender(string $templateFilePath, string $expectedRenderedHtmlFilePath): void
     {
+        dump($templateFilePath, $expectedRenderedHtmlFilePath);
+
         $tolerantTwig = $this->tolerantTwigEnvironmentFactory->create([$templateFilePath]);
 
         $source = $tolerantTwig->getLoader()
@@ -61,7 +56,7 @@ final class TolerantTwigEnvironmentTest extends TestCase
         $this->assertStringEqualsFile($expectedRenderedHtmlFilePath, $templateContent);
     }
 
-    public function provideData(): Iterator
+    public static function provideData(): Iterator
     {
         yield [
             __DIR__ . '/Fixture/extends_dynamic_template.twig',

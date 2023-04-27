@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace SmokedTwigRenderer\Twig;
+namespace TomasVotruba\Torch\Twig;
 
-use SmokedTwigRenderer\Form\SimpleFormType;
 use Symfony\Component\Form\FormFactoryInterface;
+use TomasVotruba\Torch\Form\SimpleFormType;
 use Twig\Environment;
 use Twig\Loader\LoaderInterface;
 use Twig\TwigFilter;
@@ -18,7 +18,7 @@ use Twig\TwigFunction;
  * It allows to render any templates without variables. This allows semi-dynamic analysis of template,
  * checks errors and oppose to simple linter, also validates the bundle configuration, all twig extensions and so on.
  *
- * @see \SmokedTwigRenderer\Tests\Twig\TolerantTwigEnvironmentTest
+ * @see \TomasVotruba\Torch\Tests\Twig\TolerantTwigEnvironmentTest
  */
 final class TolerantTwigEnvironment
 {

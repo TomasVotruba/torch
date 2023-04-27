@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace SmokedTwigRenderer\Twig;
+namespace TomasVotruba\Torch\Twig;
 
 use Nette\Utils\FileSystem;
-use SmokedTwigRenderer\Reflection\PrivatesAccessor;
-use SmokedTwigRenderer\ValueObject\DummyTheme;
 use Symfony\Component\Form\FormFactoryInterface;
+use TomasVotruba\Torch\Reflection\PrivatesAccessor;
+use TomasVotruba\Torch\ValueObject\DummyTheme;
 use Twig\Environment;
 use Twig\Extension\StagingExtension;
 use Twig\Loader\ArrayLoader;
 use Twig\Loader\ChainLoader;
 
 /**
- * @see \SmokedTwigRenderer\Tests\Twig\TolerantTwigEnvironmentTest
+ * @see \TomasVotruba\Torch\Tests\Twig\TolerantTwigEnvironmentTest
  */
 final class TolerantTwigEnvironmentFactory
 {

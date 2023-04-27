@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SmokedTwigRenderer\Contract;
+namespace TomasVotruba\Torch\Contract;
 
 use Twig\Environment;
 
