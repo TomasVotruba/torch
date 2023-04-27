@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SmokedTwigRenderer\ValueObject;
+namespace TomasVotruba\Torch\ValueObject;
 
 final class FilterNamesAndFunctionNames
 {

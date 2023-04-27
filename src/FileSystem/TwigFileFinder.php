@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SmokedTwigRenderer\FileSystem;
+namespace TomasVotruba\Torch\FileSystem;
 
 use Symfony\Component\Finder\Finder;
 use Webmozart\Assert\Assert;

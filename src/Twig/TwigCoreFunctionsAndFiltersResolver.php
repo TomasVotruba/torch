@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace SmokedTwigRenderer\Twig;
+namespace TomasVotruba\Torch\Twig;
 
-use SmokedTwigRenderer\ValueObject\FilterNamesAndFunctionNames;
 use Symfony\Bridge\Twig\Extension\FormExtension;
+use TomasVotruba\Torch\ValueObject\FilterNamesAndFunctionNames;
 use Twig\Environment;
 use Twig\Extension\ExtensionInterface;
 use Twig\TwigFilter;

@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace SmokedTwigRenderer\Twig;
+namespace TomasVotruba\Torch\Twig;
 
-use SmokedTwigRenderer\Contract\EnvironmentDecoratorInterface;
-use SmokedTwigRenderer\Enum\ParameterName;
-use SmokedTwigRenderer\Exception\TwigConstantNotFoundException;
-use SmokedTwigRenderer\ValueObject\FilterNamesAndFunctionNames;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use TomasVotruba\Torch\Contract\EnvironmentDecoratorInterface;
+use TomasVotruba\Torch\Enum\ParameterName;
+use TomasVotruba\Torch\Exception\TwigConstantNotFoundException;
+use TomasVotruba\Torch\ValueObject\FilterNamesAndFunctionNames;
 use Twig\Environment;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
 
 /**
- * @see \SmokedTwigRenderer\Tests\Twig\TolerantTwigFunctionFilterDecoratorTest
+ * @see \TomasVotruba\Torch\Tests\Twig\TolerantTwigFunctionFilterDecoratorTest
  */
 final class TolerantTwigFunctionFilterDecorator
 {
