@@ -11,8 +11,6 @@ final class SafeEnvironmentDecorator implements EnvironmentDecoratorInterface
 {
     public function decorate(Environment $environment): void
     {
-        $environment->addFunction(new TwigFunction('dynamicTemplate', function () {
-            return DummyTheme::LAYOUT_NAME;
-        }));
+        $environment->addFunction(new TwigFunction('dynamicTemplate', fn () => DummyTheme::LAYOUT_NAME));
     }
 }

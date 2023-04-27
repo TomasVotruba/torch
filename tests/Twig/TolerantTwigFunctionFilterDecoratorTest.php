@@ -8,6 +8,7 @@ use TomasVotruba\Torch\Tests\AbstractTestCase;
 use TomasVotruba\Torch\Twig\TolerantTwigEnvironment;
 use TomasVotruba\Torch\Twig\TolerantTwigEnvironmentFactory;
 use Twig\TwigFunction;
+use Webmozart\Assert\Assert;
 
 final class TolerantTwigFunctionFilterDecoratorTest extends AbstractTestCase
 {
@@ -33,7 +34,10 @@ final class TolerantTwigFunctionFilterDecoratorTest extends AbstractTestCase
     {
         $formWidget = $this->tolerantTwigEnvironment->getFunction('form_widget');
 
-        $result = ($formWidget->getCallable())(null);
+        $callable = $formWidget->getCallable();
+        Assert::isCallable($callable);
+
+        $result = ($callable)(null);
         $this->assertSame('', $result);
     }
 }

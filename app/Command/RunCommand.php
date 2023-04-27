@@ -6,7 +6,6 @@ namespace TomasVotruba\Torch\Command;
 
 use Illuminate\Console\Command;
 use Nette\Utils\FileSystem;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Throwable;
 use TomasVotruba\Torch\FileSystem\TwigFileFinder;
@@ -14,7 +13,7 @@ use TomasVotruba\Torch\Twig\TolerantTwigEnvironmentFactory;
 
 final class RunCommand extends Command
 {
-    private string $cacheDirectory;
+    private readonly string $cacheDirectory;
 
     /**
      * @var string
@@ -31,22 +30,9 @@ final class RunCommand extends Command
         private readonly TolerantTwigEnvironmentFactory $tolerantTwigFactory,
         private readonly TwigFileFinder $twigFileFinder,
     ) {
-        $this->tolerantTwigFactory = $tolerantTwigFactory;
-        $this->twigFileFinder = $twigFileFinder;
         $this->cacheDirectory = __DIR__ . '/../../../../var/cache/twig';
 
         parent::__construct();
-    }
-
-    protected function configure(): void
-    {
-        //$this->addArgument(
-        //    'paths',
-        //    InputArgument::IS_ARRAY | InputArgument::REQUIRED,
-        //    'Directories to look for TWIG files'
-        //);
-        //
-        //$this->addOption('exclude-file', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, 'Exclude weird files by file path');
     }
 
     protected function handle(): int
@@ -54,12 +40,11 @@ final class RunCommand extends Command
         $symfonyStyle = new SymfonyStyle($this->input, $this->output);
 
         $twigFiles = $this->findTwigFiles();
-        $symfonyStyle->note(sprintf('Found %d twig files', count($twigFiles)));
+        $this->info(sprintf('Found %d twig files', count($twigFiles)));
 
         $tolerantTwigEnvironment = $this->tolerantTwigFactory->create($twigFiles);
 
-        $isDebug = $output->getVerbosity() >= OutputInterface::VERBOSITY_DEBUG;
-        if ($isDebug === false) {
+        if ($this->output->isDebug()) {
             $symfonyStyle->progressStart(count($twigFiles));
         }
 
@@ -69,7 +54,7 @@ final class RunCommand extends Command
         $invalidFiles = [];
 
         foreach ($twigFiles as $twigFile) {
-            if ($isDebug) {
+            if ($this->output->isDebug()) {
                 $symfonyStyle->writeln($twigFile);
             } else {
                 $symfonyStyle->progressAdvance();
@@ -79,14 +64,15 @@ final class RunCommand extends Command
                 $tolerantTwigEnvironment->render($twigFile);
             } catch (Throwable $throwable) {
                 // in debug, throw exception directly to explore the stack trace
-                if ($isDebug) {
+                if ($this->output->isDebug()) {
                     throw $throwable;
                 }
+
                 $invalidFiles[$twigFile] = $throwable->getMessage();
             }
         }
 
-        if ($isDebug === false) {
+        if ($this->output->isDebug() === false) {
             $symfonyStyle->progressFinish();
         }
 
@@ -94,12 +80,12 @@ final class RunCommand extends Command
             $symfonyStyle->success('TWIG files are properly compiled');
 
             // success
-            return StatusCode::SUCCESS;
+            return self::SUCCESS;
         }
 
         $this->reportInvalidFiles($symfonyStyle, $invalidFiles, $twigFiles);
 
-        return StatusCode::FAILURE;
+        return self::FAILURE;
     }
 
     /**

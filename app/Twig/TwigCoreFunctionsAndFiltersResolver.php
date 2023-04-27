@@ -47,10 +47,10 @@ final class TwigCoreFunctionsAndFiltersResolver
                 continue;
             }
 
-            $extensionClass = get_class($extension);
+            $extensionClass = $extension::class;
 
             // core extensions
-            if (strpos($extensionClass, 'Symfony') === 0 || strpos($extensionClass, 'Twig') === 0) {
+            if (str_starts_with($extensionClass, 'Symfony') || str_starts_with($extensionClass, 'Twig')) {
                 $coreExtensions[] = $extension;
             }
         }

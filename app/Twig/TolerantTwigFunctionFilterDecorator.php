@@ -4,34 +4,23 @@ declare(strict_types=1);
 
 namespace TomasVotruba\Torch\Twig;
 
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use TomasVotruba\Torch\Contract\EnvironmentDecoratorInterface;
-use TomasVotruba\Torch\Enum\ParameterName;
 use TomasVotruba\Torch\Exception\TwigConstantNotFoundException;
 use TomasVotruba\Torch\ValueObject\FilterNamesAndFunctionNames;
 use Twig\Environment;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
+use Webmozart\Assert\Assert;
 
 /**
  * @see \TomasVotruba\Torch\Tests\Twig\TolerantTwigFunctionFilterDecoratorTest
  */
 final class TolerantTwigFunctionFilterDecorator
 {
-    private TwigCoreFunctionsAndFiltersResolver $twigCoreFunctionsAndFiltersResolver;
-
-    private ParameterBagInterface $parameterBag;
-
-    private ?EnvironmentDecoratorInterface $environmentDecorator = null;
-
     public function __construct(
-        TwigCoreFunctionsAndFiltersResolver $twigCoreFunctionsAndFiltersResolver,
-        ParameterBagInterface $parameterBag,
-        ?EnvironmentDecoratorInterface $environmentDecorator = null
+        private readonly TwigCoreFunctionsAndFiltersResolver $twigCoreFunctionsAndFiltersResolver,
+        private readonly ?\TomasVotruba\Torch\Contract\EnvironmentDecoratorInterface $environmentDecorator = null
     ) {
-        $this->twigCoreFunctionsAndFiltersResolver = $twigCoreFunctionsAndFiltersResolver;
-        $this->parameterBag = $parameterBag;
-        $this->environmentDecorator = $environmentDecorator;
     }
 
     /**
@@ -43,9 +32,11 @@ final class TolerantTwigFunctionFilterDecorator
         /** @see inspiration https://gist.github.com/TomasVotruba/b3520601c474fbea0488cc74c08e18fb */
         $coreFilterNamesAndFunctionsNames = $this->twigCoreFunctionsAndFiltersResolver->resolve($environment);
 
-        $skippedFunctionNames = $this->parameterBag->get(ParameterName::FUNCTIONS_TO_SKIP);
+        $functionsToSkip = app()->configPath('functions_to_skip');
+        Assert::isArray($functionsToSkip);
+        Assert::allString($functionsToSkip);
 
-        $this->decorateTolerantFunctions($functions, $coreFilterNamesAndFunctionsNames, $environment, $skippedFunctionNames);
+        $this->decorateTolerantFunctions($functions, $coreFilterNamesAndFunctionsNames, $environment, $functionsToSkip);
         $this->decorateTolerantFilters($filters, $coreFilterNamesAndFunctionsNames, $environment);
 
         if (! $this->environmentDecorator instanceof EnvironmentDecoratorInterface) {
@@ -80,9 +71,7 @@ final class TolerantTwigFunctionFilterDecorator
                 // keep as important
                 $environment->addFunction($function);
             } else {
-                $environment->addFunction(new TwigFunction($functionName, function () {
-                    return '';
-                }));
+                $environment->addFunction(new TwigFunction($functionName, fn () => ''));
             }
         }
     }
@@ -97,9 +86,7 @@ final class TolerantTwigFunctionFilterDecorator
                 // keep as important
                 $environment->addFilter($filter);
             } else {
-                $environment->addFilter(new TwigFilter($filterName, function () {
-                    return '';
-                }));
+                $environment->addFilter(new TwigFilter($filterName, fn () => ''));
             }
         }
     }
@@ -110,7 +97,7 @@ final class TolerantTwigFunctionFilterDecorator
         // special case to validate constants exists
         $constantTwigFunction = new TwigFunction('constant', function ($constant, $object = null) {
             if ($object !== null) {
-                $constant = \get_class($object) . '::' . $constant;
+                $constant = $object::class . '::' . $constant;
             }
 
             if (defined($constant) === false) {

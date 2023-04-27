@@ -18,24 +18,12 @@ use Twig\Loader\ChainLoader;
  */
 final class TolerantTwigEnvironmentFactory
 {
-    private Environment $environment;
-
-    private PrivatesAccessor $privatesAccessor;
-
-    private TolerantTwigFunctionFilterDecorator $tolerantTwigFunctionFilterDecorator;
-
-    private FormFactoryInterface $formFactory;
-
     public function __construct(
-        Environment $environment,
-        PrivatesAccessor $privatesAccessor,
-        TolerantTwigFunctionFilterDecorator $tolerantTwigFunctionFilterDecorator,
-        FormFactoryInterface $formFactory
+        private readonly Environment $environment,
+        private readonly PrivatesAccessor $privatesAccessor,
+        private readonly TolerantTwigFunctionFilterDecorator $tolerantTwigFunctionFilterDecorator,
+        private readonly FormFactoryInterface $formFactory
     ) {
-        $this->environment = $environment;
-        $this->privatesAccessor = $privatesAccessor;
-        $this->tolerantTwigFunctionFilterDecorator = $tolerantTwigFunctionFilterDecorator;
-        $this->formFactory = $formFactory;
     }
 
     /**
@@ -68,15 +56,18 @@ final class TolerantTwigEnvironmentFactory
 
         // prepare loader with files so it can easily render
         foreach ($twigFiles as $name => $twigFile) {
+            $twigFileContents = FileSystem::read($twigFile);
+
             if (is_string($name)) {
-                $arrayLoader->setTemplate($name, FileSystem::read($twigFile));
+                $arrayLoader->setTemplate($name, $twigFileContents);
             } else {
-                $arrayLoader->setTemplate($twigFile, FileSystem::read($twigFile));
+                $arrayLoader->setTemplate($twigFile, $twigFileContents);
             }
         }
 
         // dummy templates to re-use instead of dynamic ones
-        $arrayLoader->setTemplate(DummyTheme::LAYOUT_NAME, file_get_contents(__DIR__ . '/../../templates/dummy_layout.twig'));
+        $defaultLayoutContents = FileSystem::read(__DIR__ . '/../../templates/dummy_layout.twig');
+        $arrayLoader->setTemplate(DummyTheme::LAYOUT_NAME, $defaultLayoutContents);
 
         $environment->setLoader($chainLoader);
     }
