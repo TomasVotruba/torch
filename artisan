@@ -1,0 +1,29 @@
+#!/usr/bin/env php
+<?php
+
+use Illuminate\Console\Application;
+use Illuminate\Contracts\Console\Kernel;
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Output\ConsoleOutput;
+
+define('LARAVEL_START', microtime(true));
+
+require __DIR__ . '/vendor/autoload.php';
+
+/** @var \Illuminate\Contracts\Foundation\Application $application */
+$application = require_once __DIR__.'/bootstrap/app.php';
+
+// set default comment name
+Application::starting(function (Application $application) {
+    $application->setDefaultCommand('run');
+});
+
+$kernel = $application->make(Kernel::class);
+
+$exitCode = $kernel->handle(
+    $input = new ArgvInput,
+    new ConsoleOutput
+);
+
+$kernel->terminate($input, $exitCode);
+exit($exitCode);

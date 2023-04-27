@@ -4,33 +4,32 @@ declare(strict_types=1);
 
 namespace SmokedTwigRenderer\Command;
 
-use AppBundle\Enum\StatusCode;
+use Illuminate\Console\Command;
 use Nette\Utils\FileSystem;
 use SmokedTwigRenderer\FileSystem\TwigFileFinder;
 use SmokedTwigRenderer\Twig\TolerantTwigEnvironmentFactory;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Throwable;
 
-/**
- * Run like this:
- * SYMFONY_ENV=ci php app/console smoke-twig-render app
- */
-final class SmokeTwigRenderCommand extends Command
+final class RunCommand extends Command
 {
-    private TolerantTwigEnvironmentFactory $tolerantTwigFactory;
-
-    private TwigFileFinder $twigFileFinder;
-
     private string $cacheDirectory;
 
+    /**
+     * @var string
+     * @see https://laravel.com/docs/10.x/artisan#defining-input-expectations
+     */
+    protected $signature = 'run {paths} {--exclude-file:*}';
+
+    /**
+     * @var string
+     */
+    protected $description = 'Render twig templates to test their values out';
+
     public function __construct(
-        TolerantTwigEnvironmentFactory $tolerantTwigFactory,
-        TwigFileFinder $twigFileFinder
+        private readonly TolerantTwigEnvironmentFactory $tolerantTwigFactory,
+        private readonly TwigFileFinder $twigFileFinder,
     ) {
         $this->tolerantTwigFactory = $tolerantTwigFactory;
         $this->twigFileFinder = $twigFileFinder;
@@ -41,23 +40,20 @@ final class SmokeTwigRenderCommand extends Command
 
     protected function configure(): void
     {
-        $this->setName('smoke-twig-render');
-
-        $this->setDescription('Render twig templates to test their values out');
-        $this->addArgument(
-            'paths',
-            InputArgument::IS_ARRAY | InputArgument::REQUIRED,
-            'Directories to look for TWIG files'
-        );
-
-        $this->addOption('exclude-file', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, 'Exclude weird files by file path');
+        //$this->addArgument(
+        //    'paths',
+        //    InputArgument::IS_ARRAY | InputArgument::REQUIRED,
+        //    'Directories to look for TWIG files'
+        //);
+        //
+        //$this->addOption('exclude-file', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, 'Exclude weird files by file path');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    protected function handle(): int
     {
-        $symfonyStyle = new SymfonyStyle($input, $output);
+        $symfonyStyle = new SymfonyStyle($this->input, $this->output);
 
-        $twigFiles = $this->findTwigFiles($input);
+        $twigFiles = $this->findTwigFiles();
         $symfonyStyle->note(sprintf('Found %d twig files', count($twigFiles)));
 
         $tolerantTwigEnvironment = $this->tolerantTwigFactory->create($twigFiles);
@@ -109,10 +105,10 @@ final class SmokeTwigRenderCommand extends Command
     /**
      * @return string[]
      */
-    private function findTwigFiles(InputInterface $input): array
+    private function findTwigFiles(): array
     {
-        $paths = (array) $input->getArgument('paths');
-        $excludedFiles = (array) $input->getOption('exclude-file');
+        $paths = (array) $this->argument('paths');
+        $excludedFiles = (array) $this->option('exclude-file');
 
         return $this->twigFileFinder->findInDirectories($paths, $excludedFiles);
     }
