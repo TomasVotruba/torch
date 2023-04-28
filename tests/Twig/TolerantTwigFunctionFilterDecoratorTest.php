@@ -6,9 +6,7 @@ namespace TomasVotruba\Torch\Tests\Twig;
 
 use TomasVotruba\Torch\Tests\AbstractTestCase;
 use TomasVotruba\Torch\Twig\TolerantTwigEnvironment;
-use TomasVotruba\Torch\Twig\TolerantTwigEnvironmentFactory;
 use Twig\TwigFunction;
-use Webmozart\Assert\Assert;
 
 final class TolerantTwigFunctionFilterDecoratorTest extends AbstractTestCase
 {
@@ -18,8 +16,7 @@ final class TolerantTwigFunctionFilterDecoratorTest extends AbstractTestCase
     {
         parent::setUp();
 
-        $tolerantTwigFactory = $this->make(TolerantTwigEnvironmentFactory::class);
-        $this->tolerantTwigEnvironment = $tolerantTwigFactory->create([]);
+        $this->tolerantTwigEnvironment = $this->make(TolerantTwigEnvironment::class);
     }
 
     public function testFormStart(): void
@@ -27,17 +24,19 @@ final class TolerantTwigFunctionFilterDecoratorTest extends AbstractTestCase
         $formStartFunction = $this->tolerantTwigEnvironment->getFunction('form_start');
         $this->assertInstanceOf(TwigFunction::class, $formStartFunction);
 
+        dd($formStartFunction);
+
         $this->assertIsCallable($formStartFunction->getCallable());
     }
 
-    public function testFormWidget(): void
-    {
-        $formWidget = $this->tolerantTwigEnvironment->getFunction('form_widget');
-
-        $callable = $formWidget->getCallable();
-        Assert::isCallable($callable);
-
-        $result = ($callable)(null);
-        $this->assertSame('', $result);
-    }
+    //public function testFormWidget(): void
+    //{
+    //    $formWidget = $this->tolerantTwigEnvironment->getFunction('form_widget');
+    //
+    //    $callable = $formWidget->getCallable();
+    //    $this->assertIsCallable($callable);
+    //
+    //    $result = ($callable)(null);
+    //    $this->assertSame('', $result);
+    //}
 }

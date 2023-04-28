@@ -21,7 +21,7 @@ final class AppServicesProvider extends ServiceProvider
     {
         // add twig environment here
         $this->app->singleton(Environment::class, function () {
-            return require_once __DIR__ . '/../../twig-environment-provider.php';
+            return require __DIR__ . '/../../twig-environment-provider.php';
         });
 
         $this->app->singleton(FormFactoryInterface::class, function () {

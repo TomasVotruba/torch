@@ -22,11 +22,11 @@ final class TolerantTwigEnvironmentTest extends AbstractTestCase
         parent::setUp();
 
         // dynamic way to add a service, decorate with "dynamicTemplate()" function here
-        app()->bind('dynamic_template_twig_environment_decorator', function () {
+        app()->bind('twig_environment_decorator', function () {
             return new SafeEnvironmentDecorator();
         });
 
-        app()->tag('dynamic_template_twig_environment_decorator', ServiceTag::TWIG_ENVIRONMENT_DECORATOR);
+        app()->tag('twig_environment_decorator', ServiceTag::TWIG_ENVIRONMENT_DECORATOR);
 
         $this->tolerantTwigEnvironmentFactory = $this->make(TolerantTwigEnvironmentFactory::class);
     }
