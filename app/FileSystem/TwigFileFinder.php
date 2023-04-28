@@ -41,12 +41,10 @@ final class TwigFileFinder
             $fileInfos = iterator_to_array($finder->getIterator());
             $directoryFiles = array_keys($fileInfos);
 
-            $files = array_merge($files, $directoryFiles);
+            $files = [...$files, ...$directoryFiles];
         }
 
         // remove excluded files
-        return array_filter($files, function (string $file) use ($excludedFiles) {
-            return ! in_array($file, $excludedFiles, true);
-        });
+        return array_filter($files, fn (string $file) => ! in_array($file, $excludedFiles, true));
     }
 }

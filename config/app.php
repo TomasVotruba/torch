@@ -21,5 +21,6 @@ return \TomasVotruba\PunchCard\AppConfig::make()
         ViewServiceProvider::class,
         SessionServiceProvider::class,
         QueueServiceProvider::class,
+        \TomasVotruba\Torch\Providers\AppServicesProvider::class,
     ])
     ->toArray();

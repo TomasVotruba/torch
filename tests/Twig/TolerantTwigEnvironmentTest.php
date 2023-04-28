@@ -6,7 +6,9 @@ namespace TomasVotruba\Torch\Tests\Twig;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
+use TomasVotruba\Torch\Enum\ServiceTag;
 use TomasVotruba\Torch\Tests\AbstractTestCase;
+use TomasVotruba\Torch\Tests\Twig\Source\SafeEnvironmentDecorator;
 use TomasVotruba\Torch\Twig\TolerantTwigEnvironment;
 use TomasVotruba\Torch\Twig\TolerantTwigEnvironmentFactory;
 use Twig\Error\RuntimeError;
@@ -19,8 +21,14 @@ final class TolerantTwigEnvironmentTest extends AbstractTestCase
     {
         parent::setUp();
 
+        // dynamic way to add a service, decorate with "dynamicTemplate()" function here
+        app()->bind('twig_environment_decorator', function () {
+            return new SafeEnvironmentDecorator();
+        });
+
+        app()->tag('twig_environment_decorator', ServiceTag::TWIG_ENVIRONMENT_DECORATOR);
+
         $this->tolerantTwigEnvironmentFactory = $this->make(TolerantTwigEnvironmentFactory::class);
-        //    __DIR__ . '/../config/test_config.php',
     }
 
     public function testCreate(): void
@@ -34,7 +42,6 @@ final class TolerantTwigEnvironmentTest extends AbstractTestCase
     public function testInvalid(): void
     {
         $templateFilePath = __DIR__ . '/Fixture/invalid/missing_constant.twig';
-
         $tolerantTwig = $this->tolerantTwigEnvironmentFactory->create([$templateFilePath]);
 
         $this->expectException(RuntimeError::class);
@@ -44,12 +51,11 @@ final class TolerantTwigEnvironmentTest extends AbstractTestCase
     #[DataProvider('provideData')]
     public function testRender(string $templateFilePath, string $expectedRenderedHtmlFilePath): void
     {
-        dump($templateFilePath, $expectedRenderedHtmlFilePath);
-
         $tolerantTwig = $this->tolerantTwigEnvironmentFactory->create([$templateFilePath]);
 
         $source = $tolerantTwig->getLoader()
             ->getSourceContext($templateFilePath);
+
         $this->assertStringEqualsFile($templateFilePath, $source->getCode());
 
         $templateContent = $tolerantTwig->render($templateFilePath);

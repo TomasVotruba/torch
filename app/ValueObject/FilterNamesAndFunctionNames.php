@@ -7,25 +7,13 @@ namespace TomasVotruba\Torch\ValueObject;
 final class FilterNamesAndFunctionNames
 {
     /**
-     * @var string[]
-     */
-    private $filterNames = [];
-
-    /**
-     * @var string[]
-     */
-    private $functionNames = [];
-
-    /**
      * @param string[] $filterNames
      * @param string[] $functionNames
      */
     public function __construct(
-        array $filterNames,
-        array $functionNames
+        private readonly array $filterNames,
+        private readonly array $functionNames
     ) {
-        $this->filterNames = $filterNames;
-        $this->functionNames = $functionNames;
     }
 
     /**

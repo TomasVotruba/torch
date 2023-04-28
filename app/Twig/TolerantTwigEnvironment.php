@@ -10,6 +10,7 @@ use Twig\Environment;
 use Twig\Loader\LoaderInterface;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
+use Webmozart\Assert\Assert;
 
 /**
  * This class is a tolerant wrapper around Twig\Environment.
@@ -22,16 +23,10 @@ use Twig\TwigFunction;
  */
 final class TolerantTwigEnvironment
 {
-    private FormFactoryInterface $formFactory;
-
-    private Environment $environment;
-
     public function __construct(
-        Environment $environment,
-        FormFactoryInterface $formFactory
+        private readonly Environment $environment,
+        private readonly FormFactoryInterface $formFactory
     ) {
-        $this->formFactory = $formFactory;
-        $this->environment = $environment;
     }
 
     /**
@@ -58,11 +53,17 @@ final class TolerantTwigEnvironment
 
     public function getFunction(string $functionName): TwigFunction
     {
-        return $this->environment->getFunction($functionName);
+        $twigFunction = $this->environment->getFunction($functionName);
+        Assert::isInstanceOf($twigFunction, TwigFunction::class);
+
+        return $twigFunction;
     }
 
     public function getFilter(string $filterName): TwigFilter
     {
-        return $this->environment->getFilter($filterName);
+        $twigFilter = $this->environment->getFilter($filterName);
+        Assert::isInstanceOf($twigFilter, TwigFilter::class);
+
+        return $twigFilter;
     }
 }

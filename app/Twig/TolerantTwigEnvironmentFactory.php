@@ -6,10 +6,12 @@ namespace TomasVotruba\Torch\Twig;
 
 use Nette\Utils\FileSystem;
 use Symfony\Component\Form\FormFactoryInterface;
+use TomasVotruba\Torch\Contract\TwigEnvironmentDecoratorInterface;
 use TomasVotruba\Torch\Reflection\PrivatesAccessor;
 use TomasVotruba\Torch\ValueObject\DummyTheme;
 use Twig\Environment;
 use Twig\Extension\StagingExtension;
+use Twig\ExtensionSet;
 use Twig\Loader\ArrayLoader;
 use Twig\Loader\ChainLoader;
 
@@ -18,24 +20,16 @@ use Twig\Loader\ChainLoader;
  */
 final class TolerantTwigEnvironmentFactory
 {
-    private Environment $environment;
-
-    private PrivatesAccessor $privatesAccessor;
-
-    private TolerantTwigFunctionFilterDecorator $tolerantTwigFunctionFilterDecorator;
-
-    private FormFactoryInterface $formFactory;
-
+    /**
+     * @param TwigEnvironmentDecoratorInterface[] $twigEnvironmentDecorators
+     */
     public function __construct(
-        Environment $environment,
-        PrivatesAccessor $privatesAccessor,
-        TolerantTwigFunctionFilterDecorator $tolerantTwigFunctionFilterDecorator,
-        FormFactoryInterface $formFactory
+        private readonly PrivatesAccessor $privatesAccessor,
+        private readonly Environment $environment,
+        private readonly TolerantTwigFunctionFilterDecorator $tolerantTwigFunctionFilterDecorator,
+        private readonly FormFactoryInterface $formFactory,
+        private readonly iterable $twigEnvironmentDecorators
     ) {
-        $this->environment = $environment;
-        $this->privatesAccessor = $privatesAccessor;
-        $this->tolerantTwigFunctionFilterDecorator = $tolerantTwigFunctionFilterDecorator;
-        $this->formFactory = $formFactory;
     }
 
     /**
@@ -54,6 +48,11 @@ final class TolerantTwigEnvironmentFactory
         // required to have tolerant twig, that have no variables
         $isolatedEnvironment->disableStrictVariables();
 
+        // possible to get extended by end-user
+        foreach ($this->twigEnvironmentDecorators as $twigEnvironmentDecorator) {
+            $twigEnvironmentDecorator->decorate($isolatedEnvironment);
+        }
+
         return new TolerantTwigEnvironment($isolatedEnvironment, $this->formFactory);
     }
 
@@ -68,15 +67,18 @@ final class TolerantTwigEnvironmentFactory
 
         // prepare loader with files so it can easily render
         foreach ($twigFiles as $name => $twigFile) {
+            $twigFileContents = FileSystem::read($twigFile);
+
             if (is_string($name)) {
-                $arrayLoader->setTemplate($name, FileSystem::read($twigFile));
+                $arrayLoader->setTemplate($name, $twigFileContents);
             } else {
-                $arrayLoader->setTemplate($twigFile, FileSystem::read($twigFile));
+                $arrayLoader->setTemplate($twigFile, $twigFileContents);
             }
         }
 
         // dummy templates to re-use instead of dynamic ones
-        $arrayLoader->setTemplate(DummyTheme::LAYOUT_NAME, file_get_contents(__DIR__ . '/../../templates/dummy_layout.twig'));
+        $defaultLayoutContents = FileSystem::read(__DIR__ . '/../../templates/dummy_layout.twig');
+        $arrayLoader->setTemplate(DummyTheme::LAYOUT_NAME, $defaultLayoutContents);
 
         $environment->setLoader($chainLoader);
     }
@@ -98,8 +100,12 @@ final class TolerantTwigEnvironmentFactory
     private function resetExtensionInitialization(Environment $environment): void
     {
         // TWIG 2
+        /** @var ExtensionSet $extensionSet */
         $extensionSet = $this->privatesAccessor->getPrivateProperty($environment, 'extensionSet');
+
         $this->privatesAccessor->setPrivateProperty($extensionSet, 'initialized', false);
         $this->privatesAccessor->setPrivateProperty($extensionSet, 'staging', new StagingExtension());
+
+        $extensionSet->addExtension(new \Symfony\Bridge\Twig\Extension\FormExtension());
     }
 }
