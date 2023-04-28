@@ -19,8 +19,8 @@ use Twig\Loader\ChainLoader;
 final class TolerantTwigEnvironmentFactory
 {
     public function __construct(
-        private readonly Environment $environment,
         private readonly PrivatesAccessor $privatesAccessor,
+        private readonly Environment $environment,
         private readonly TolerantTwigFunctionFilterDecorator $tolerantTwigFunctionFilterDecorator,
         private readonly FormFactoryInterface $formFactory
     ) {

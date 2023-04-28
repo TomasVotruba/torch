@@ -19,8 +19,9 @@ final class TolerantTwigEnvironmentTest extends AbstractTestCase
     {
         parent::setUp();
 
+        // @todo decorate "dynamicTemplate()" here
+
         $this->tolerantTwigEnvironmentFactory = $this->make(TolerantTwigEnvironmentFactory::class);
-        //    __DIR__ . '/../config/test_config.php',
     }
 
     public function testCreate(): void
@@ -44,12 +45,11 @@ final class TolerantTwigEnvironmentTest extends AbstractTestCase
     #[DataProvider('provideData')]
     public function testRender(string $templateFilePath, string $expectedRenderedHtmlFilePath): void
     {
-        dump($templateFilePath, $expectedRenderedHtmlFilePath);
-
         $tolerantTwig = $this->tolerantTwigEnvironmentFactory->create([$templateFilePath]);
 
         $source = $tolerantTwig->getLoader()
             ->getSourceContext($templateFilePath);
+
         $this->assertStringEqualsFile($templateFilePath, $source->getCode());
 
         $templateContent = $tolerantTwig->render($templateFilePath);
