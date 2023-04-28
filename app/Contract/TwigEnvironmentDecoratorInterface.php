@@ -6,7 +6,7 @@ namespace TomasVotruba\Torch\Contract;
 
 use Twig\Environment;
 
-interface EnvironmentDecoratorInterface
+interface TwigEnvironmentDecoratorInterface
 {
     public function decorate(Environment $environment): void;
 }

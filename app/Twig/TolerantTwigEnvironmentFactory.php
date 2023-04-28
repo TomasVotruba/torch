@@ -6,10 +6,12 @@ namespace TomasVotruba\Torch\Twig;
 
 use Nette\Utils\FileSystem;
 use Symfony\Component\Form\FormFactoryInterface;
+use TomasVotruba\Torch\Contract\TwigEnvironmentDecoratorInterface;
 use TomasVotruba\Torch\Reflection\PrivatesAccessor;
 use TomasVotruba\Torch\ValueObject\DummyTheme;
 use Twig\Environment;
 use Twig\Extension\StagingExtension;
+use Twig\ExtensionSet;
 use Twig\Loader\ArrayLoader;
 use Twig\Loader\ChainLoader;
 
@@ -18,11 +20,15 @@ use Twig\Loader\ChainLoader;
  */
 final class TolerantTwigEnvironmentFactory
 {
+    /**
+     * @param TwigEnvironmentDecoratorInterface[] $twigEnvironmentDecorators
+     */
     public function __construct(
         private readonly PrivatesAccessor $privatesAccessor,
         private readonly Environment $environment,
         private readonly TolerantTwigFunctionFilterDecorator $tolerantTwigFunctionFilterDecorator,
-        private readonly FormFactoryInterface $formFactory
+        private readonly FormFactoryInterface $formFactory,
+        private readonly iterable $twigEnvironmentDecorators
     ) {
     }
 
@@ -41,6 +47,11 @@ final class TolerantTwigEnvironmentFactory
 
         // required to have tolerant twig, that have no variables
         $isolatedEnvironment->disableStrictVariables();
+
+        // possible to get extended by end-user
+        foreach ($this->twigEnvironmentDecorators as $twigEnvironmentDecorator) {
+            $twigEnvironmentDecorator->decorate($isolatedEnvironment);
+        }
 
         return new TolerantTwigEnvironment($isolatedEnvironment, $this->formFactory);
     }
@@ -89,8 +100,12 @@ final class TolerantTwigEnvironmentFactory
     private function resetExtensionInitialization(Environment $environment): void
     {
         // TWIG 2
+        /** @var ExtensionSet $extensionSet */
         $extensionSet = $this->privatesAccessor->getPrivateProperty($environment, 'extensionSet');
+
         $this->privatesAccessor->setPrivateProperty($extensionSet, 'initialized', false);
         $this->privatesAccessor->setPrivateProperty($extensionSet, 'staging', new StagingExtension());
+
+        $extensionSet->addExtension(new \Symfony\Bridge\Twig\Extension\FormExtension());
     }
 }

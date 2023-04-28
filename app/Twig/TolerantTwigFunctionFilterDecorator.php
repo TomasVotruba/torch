@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace TomasVotruba\Torch\Twig;
 
-use TomasVotruba\Torch\Contract\EnvironmentDecoratorInterface;
+use TomasVotruba\Torch\Contract\TwigEnvironmentDecoratorInterface;
 use TomasVotruba\Torch\Exception\TwigConstantNotFoundException;
 use TomasVotruba\Torch\ValueObject\FilterNamesAndFunctionNames;
 use Twig\Environment;
@@ -19,7 +19,7 @@ final class TolerantTwigFunctionFilterDecorator
 {
     public function __construct(
         private readonly TwigCoreFunctionsAndFiltersResolver $twigCoreFunctionsAndFiltersResolver,
-        private readonly ?\TomasVotruba\Torch\Contract\EnvironmentDecoratorInterface $environmentDecorator = null
+        private readonly ?\TomasVotruba\Torch\Contract\TwigEnvironmentDecoratorInterface $environmentDecorator = null
     ) {
     }
 
@@ -40,7 +40,7 @@ final class TolerantTwigFunctionFilterDecorator
         $this->decorateTolerantFunctions($functions, $coreFilterNamesAndFunctionsNames, $environment, $functionsToSkip);
         $this->decorateTolerantFilters($filters, $coreFilterNamesAndFunctionsNames, $environment);
 
-        if (! $this->environmentDecorator instanceof EnvironmentDecoratorInterface) {
+        if (! $this->environmentDecorator instanceof TwigEnvironmentDecoratorInterface) {
             return;
         }
 
