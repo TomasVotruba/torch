@@ -24,7 +24,7 @@ use Webmozart\Assert\Assert;
 final class TolerantTwigEnvironment
 {
     public function __construct(
-        private readonly Environment $environment,
+        private readonly Environment $twigEnvironment,
         private readonly FormFactoryInterface $formFactory
     ) {
     }
@@ -36,11 +36,11 @@ final class TolerantTwigEnvironment
     {
         // add dummy form to allow simple renders
         if (! isset($context['form'])) {
-            $simpleFormType = $this->formFactory->create(SimpleFormType::class);
-            $context['form'] = $simpleFormType->createView();
+            $form = $this->formFactory->create(SimpleFormType::class);
+            $context['form'] = $form->createView();
         }
 
-        return $this->environment->render($name, $context);
+        return $this->twigEnvironment->render($name, $context);
     }
 
     /**
@@ -48,12 +48,12 @@ final class TolerantTwigEnvironment
      */
     public function getLoader(): LoaderInterface
     {
-        return $this->environment->getLoader();
+        return $this->twigEnvironment->getLoader();
     }
 
     public function getFunction(string $functionName): TwigFunction
     {
-        $twigFunction = $this->environment->getFunction($functionName);
+        $twigFunction = $this->twigEnvironment->getFunction($functionName);
         Assert::isInstanceOf($twigFunction, TwigFunction::class);
 
         return $twigFunction;
@@ -61,7 +61,7 @@ final class TolerantTwigEnvironment
 
     public function getFilter(string $filterName): TwigFilter
     {
-        $twigFilter = $this->environment->getFilter($filterName);
+        $twigFilter = $this->twigEnvironment->getFilter($filterName);
         Assert::isInstanceOf($twigFilter, TwigFilter::class);
 
         return $twigFilter;

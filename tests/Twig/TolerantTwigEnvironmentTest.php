@@ -12,6 +12,7 @@ use TomasVotruba\Torch\Tests\Twig\Source\SafeEnvironmentDecorator;
 use TomasVotruba\Torch\Twig\TolerantTwigEnvironment;
 use TomasVotruba\Torch\Twig\TolerantTwigEnvironmentFactory;
 use Twig\Error\RuntimeError;
+use Twig\Node\Node;
 
 final class TolerantTwigEnvironmentTest extends AbstractTestCase
 {
@@ -22,9 +23,7 @@ final class TolerantTwigEnvironmentTest extends AbstractTestCase
         parent::setUp();
 
         // dynamic way to add a service, decorate with "dynamicTemplate()" function here
-        app()->bind('twig_environment_decorator', function () {
-            return new SafeEnvironmentDecorator();
-        });
+        app()->bind('twig_environment_decorator', static fn (): \TomasVotruba\Torch\Tests\Twig\Source\SafeEnvironmentDecorator => new SafeEnvironmentDecorator());
 
         app()->tag('twig_environment_decorator', ServiceTag::TWIG_ENVIRONMENT_DECORATOR);
 
@@ -69,6 +68,7 @@ final class TolerantTwigEnvironmentTest extends AbstractTestCase
             __DIR__ . '/Fixture/expected/expected_simple.html',
         ];
 
+        // testing override of this this form part: vendor/symfony/twig-bridge/Node/FormThemeNode.php:29
         yield [
             __DIR__ . '/Fixture/with_form_theme.twig',
             __DIR__ . '/Fixture/expected/expected_form_theme.html',

@@ -30,7 +30,7 @@ final class TwigFileFinder
             }
         }
 
-        if ($directories) {
+        if ($directories !== []) {
             $finder = new Finder();
             $finder->name('*.twig')
                 ->files()
@@ -45,6 +45,6 @@ final class TwigFileFinder
         }
 
         // remove excluded files
-        return array_filter($files, fn (string $file) => ! in_array($file, $excludedFiles, true));
+        return array_filter($files, static fn (string $file): bool => ! in_array($file, $excludedFiles, true));
     }
 }

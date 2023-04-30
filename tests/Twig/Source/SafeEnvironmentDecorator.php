@@ -9,8 +9,8 @@ use Twig\TwigFunction;
 
 final class SafeEnvironmentDecorator implements TwigEnvironmentDecoratorInterface
 {
-    public function decorate(Environment $environment): void
+    public function decorate(Environment $twigEnvironment): void
     {
-        $environment->addFunction(new TwigFunction('dynamicTemplate', fn () => DummyTheme::LAYOUT_NAME));
+        $twigEnvironment->addFunction(new TwigFunction('dynamicTemplate', static fn (): string => DummyTheme::LAYOUT_NAME));
     }
 }

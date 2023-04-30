@@ -20,25 +20,19 @@ final class AppServicesProvider extends ServiceProvider
     public function register(): void
     {
         // add twig environment here
-        $this->app->singleton(Environment::class, function () {
-            return require __DIR__ . '/../../twig-environment-provider.php';
-        });
+        $this->app->singleton(Environment::class, static fn () => require __DIR__ . '/../../twig-environment-provider.php');
 
-        $this->app->singleton(FormFactoryInterface::class, function () {
-            // @todo create with full context of form registries :)
-            return new FormFactory(new FormRegistry([], new ResolvedFormTypeFactory()));
-        });
+        $this->app->singleton(FormFactoryInterface::class, static fn (): \Symfony\Component\Form\FormFactory => // @todo create with full context of form registries :)
+new FormFactory(new FormRegistry([], new ResolvedFormTypeFactory())));
 
-        $this->app->singleton(TolerantTwigEnvironmentFactory::class, function () {
-            return new TolerantTwigEnvironmentFactory(
-                // @todo can this be done in a simpler way?
-                $this->app->make(PrivatesAccessor::class),
-                $this->app->make(Environment::class),
-                $this->app->make(TolerantTwigFunctionFilterDecorator::class),
-                $this->app->make(FormFactoryInterface::class),
-                $this->app->tagged(ServiceTag::TWIG_ENVIRONMENT_DECORATOR)
-            );
-        });
+        $this->app->singleton(TolerantTwigEnvironmentFactory::class, fn (): \TomasVotruba\Torch\Twig\TolerantTwigEnvironmentFactory => new TolerantTwigEnvironmentFactory(
+            // @todo can this be done in a simpler way?
+            $this->app->make(PrivatesAccessor::class),
+            $this->app->make(Environment::class),
+            $this->app->make(TolerantTwigFunctionFilterDecorator::class),
+            $this->app->make(FormFactoryInterface::class),
+            $this->app->tagged(ServiceTag::TWIG_ENVIRONMENT_DECORATOR)
+        ));
     }
 
     public function boot(): void

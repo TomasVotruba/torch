@@ -13,9 +13,9 @@ use Twig\TwigFunction;
 
 final class TwigCoreFunctionsAndFiltersResolver
 {
-    public function resolve(Environment $environment): FilterNamesAndFunctionNames
+    public function resolve(Environment $twigEnvironment): FilterNamesAndFunctionNames
     {
-        $coreExtensions = $this->resolveCoreExtensions($environment);
+        $coreExtensions = $this->resolveCoreExtensions($twigEnvironment);
 
         $functionNames = [];
         $filterNames = [];
@@ -38,10 +38,11 @@ final class TwigCoreFunctionsAndFiltersResolver
     /**
      * @return ExtensionInterface[]
      */
-    private function resolveCoreExtensions(Environment $environment): array
+    private function resolveCoreExtensions(Environment $twigEnvironment): array
     {
         $coreExtensions = [];
-        foreach ($environment->getExtensions() as $extension) {
+
+        foreach ($twigEnvironment->getExtensions() as $extension) {
             // override all form functions
             if ($extension instanceof FormExtension) {
                 continue;

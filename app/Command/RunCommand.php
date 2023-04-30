@@ -27,7 +27,7 @@ final class RunCommand extends Command
     protected $description = 'Render twig templates to test their values out';
 
     public function __construct(
-        private readonly TolerantTwigEnvironmentFactory $tolerantTwigFactory,
+        private readonly TolerantTwigEnvironmentFactory $tolerantTwigEnvironmentFactory,
         private readonly TwigFileFinder $twigFileFinder,
     ) {
         $this->cacheDirectory = __DIR__ . '/../../../../var/cache/twig';
@@ -42,7 +42,7 @@ final class RunCommand extends Command
         $twigFiles = $this->findTwigFiles();
         $this->info(sprintf('Found %d twig files', count($twigFiles)));
 
-        $tolerantTwigEnvironment = $this->tolerantTwigFactory->create($twigFiles);
+        $tolerantTwigEnvironment = $this->tolerantTwigEnvironmentFactory->create($twigFiles);
 
         if ($this->output->isDebug()) {
             $symfonyStyle->progressStart(count($twigFiles));
@@ -72,7 +72,7 @@ final class RunCommand extends Command
             }
         }
 
-        if ($this->output->isDebug() === false) {
+        if (! $this->output->isDebug()) {
             $symfonyStyle->progressFinish();
         }
 
