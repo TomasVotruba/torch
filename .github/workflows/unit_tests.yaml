@@ -20,9 +20,4 @@ jobs:
             -   uses: "ramsey/composer-install@v2"
 
             # for controller tests
-            -   run: cp .env.prod .env
-
-            -   run: yarn install
-            -   run: yarn run build
-
             -   run: vendor/bin/phpunit

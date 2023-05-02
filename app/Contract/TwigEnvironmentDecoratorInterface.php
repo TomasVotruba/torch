@@ -8,5 +8,5 @@ use Twig\Environment;
 
 interface TwigEnvironmentDecoratorInterface
 {
-    public function decorate(Environment $environment): void;
+    public function decorate(Environment $twigEnvironment): void;
 }

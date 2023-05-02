@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace TomasVotruba\Torch\Twig;
 
 use Nette\Utils\FileSystem;
+use Symfony\Bridge\Twig\Extension\FormExtension;
 use Symfony\Component\Form\FormFactoryInterface;
 use TomasVotruba\Torch\Contract\TwigEnvironmentDecoratorInterface;
 use TomasVotruba\Torch\Reflection\PrivatesAccessor;
+use TomasVotruba\Torch\Twig\TokenParser\TolerantFormThemeTokenParser;
 use TomasVotruba\Torch\ValueObject\DummyTheme;
 use Twig\Environment;
 use Twig\Extension\StagingExtension;
@@ -25,7 +27,7 @@ final class TolerantTwigEnvironmentFactory
      */
     public function __construct(
         private readonly PrivatesAccessor $privatesAccessor,
-        private readonly Environment $environment,
+        private readonly Environment $twigEnvironment,
         private readonly TolerantTwigFunctionFilterDecorator $tolerantTwigFunctionFilterDecorator,
         private readonly FormFactoryInterface $formFactory,
         private readonly iterable $twigEnvironmentDecorators
@@ -37,13 +39,17 @@ final class TolerantTwigEnvironmentFactory
      */
     public function create(array $twigFiles): TolerantTwigEnvironment
     {
-        $environment = $this->environment;
+        $environment = $this->twigEnvironment;
         $isolatedEnvironment = clone $environment;
+
+        $this->resetExtensionInitialization($isolatedEnvironment);
 
         $this->decorateLoaderWithFiles($isolatedEnvironment, $twigFiles);
 
         // add tolerant functions and filters
         $this->decorateTolerantFiltersAndFunctions($isolatedEnvironment);
+
+        $this->decorateTolerantFormThemeTag($isolatedEnvironment);
 
         // required to have tolerant twig, that have no variables
         $isolatedEnvironment->disableStrictVariables();
@@ -59,9 +65,9 @@ final class TolerantTwigEnvironmentFactory
     /**
      * @param string[] $twigFiles
      */
-    private function decorateLoaderWithFiles(Environment $environment, array $twigFiles): void
+    private function decorateLoaderWithFiles(Environment $twigEnvironment, array $twigFiles): void
     {
-        $originalLoader = $environment->getLoader();
+        $originalLoader = $twigEnvironment->getLoader();
         $arrayLoader = new ArrayLoader();
         $chainLoader = new ChainLoader([$arrayLoader, $originalLoader]);
 
@@ -80,32 +86,38 @@ final class TolerantTwigEnvironmentFactory
         $defaultLayoutContents = FileSystem::read(__DIR__ . '/../../templates/dummy_layout.twig');
         $arrayLoader->setTemplate(DummyTheme::LAYOUT_NAME, $defaultLayoutContents);
 
-        $environment->setLoader($chainLoader);
+        $twigEnvironment->setLoader($chainLoader);
     }
 
     /**
      * @see https://gist.github.com/TomasVotruba/b3520601c474fbea0488cc74c08e18fb
      */
-    private function decorateTolerantFiltersAndFunctions(Environment $environment): void
+    private function decorateTolerantFiltersAndFunctions(Environment $twigEnvironment): void
     {
+        $twigEnvironment->addExtension(new FormExtension());
+
         // after we fetch these, the staging must be reset to the twig environment is not locked
-        $functions = $environment->getFunctions();
-        $filters = $environment->getFilters();
+        $functions = $twigEnvironment->getFunctions();
+        $filters = $twigEnvironment->getFilters();
 
-        $this->resetExtensionInitialization($environment);
+        $this->resetExtensionInitialization($twigEnvironment);
 
-        $this->tolerantTwigFunctionFilterDecorator->decorate($environment, $functions, $filters);
+        $this->tolerantTwigFunctionFilterDecorator->decorate($twigEnvironment, $functions, $filters);
     }
 
-    private function resetExtensionInitialization(Environment $environment): void
+    private function resetExtensionInitialization(Environment $twigEnvironment): void
     {
         // TWIG 2
         /** @var ExtensionSet $extensionSet */
-        $extensionSet = $this->privatesAccessor->getPrivateProperty($environment, 'extensionSet');
+        $extensionSet = $this->privatesAccessor->getPrivateProperty($twigEnvironment, 'extensionSet');
 
         $this->privatesAccessor->setPrivateProperty($extensionSet, 'initialized', false);
         $this->privatesAccessor->setPrivateProperty($extensionSet, 'staging', new StagingExtension());
+    }
 
-        $extensionSet->addExtension(new \Symfony\Bridge\Twig\Extension\FormExtension());
+    private function decorateTolerantFormThemeTag(Environment $twigEnvironment): void
+    {
+        $tolerantFormThemeTokenParser = new TolerantFormThemeTokenParser();
+        $twigEnvironment->addTokenParser($tolerantFormThemeTokenParser);
     }
 }

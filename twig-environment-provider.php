@@ -11,6 +11,6 @@ $environment = new Environment(
 );
 
 // add form extensions
-$environment->addExtension(new \Symfony\Bridge\Twig\Extension\FormExtension());
+// $environment->addExtension(new \Symfony\Bridge\Twig\Extension\FormExtension());
 
 return $environment;

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace TomasVotruba\Torch\Twig;
 
-use TomasVotruba\Torch\Contract\TwigEnvironmentDecoratorInterface;
 use TomasVotruba\Torch\Exception\TwigConstantNotFoundException;
 use TomasVotruba\Torch\ValueObject\FilterNamesAndFunctionNames;
 use Twig\Environment;
@@ -19,7 +18,6 @@ final class TolerantTwigFunctionFilterDecorator
 {
     public function __construct(
         private readonly TwigCoreFunctionsAndFiltersResolver $twigCoreFunctionsAndFiltersResolver,
-        private readonly ?\TomasVotruba\Torch\Contract\TwigEnvironmentDecoratorInterface $environmentDecorator = null
     ) {
     }
 
@@ -27,24 +25,18 @@ final class TolerantTwigFunctionFilterDecorator
      * @param TwigFunction[] $functions
      * @param TwigFilter[] $filters
      */
-    public function decorate(Environment $environment, array $functions, array $filters): void
+    public function decorate(Environment $twigEnvironment, array $functions, array $filters): void
     {
         /** @see inspiration https://gist.github.com/TomasVotruba/b3520601c474fbea0488cc74c08e18fb */
-        $coreFilterNamesAndFunctionsNames = $this->twigCoreFunctionsAndFiltersResolver->resolve($environment);
+        $filterNamesAndFunctionNames = $this->twigCoreFunctionsAndFiltersResolver->resolve($twigEnvironment);
 
         $functionsToSkip = config('parameters.functions_to_skip');
 
         Assert::isArray($functionsToSkip);
         Assert::allString($functionsToSkip);
 
-        $this->decorateTolerantFunctions($functions, $coreFilterNamesAndFunctionsNames, $environment, $functionsToSkip);
-        $this->decorateTolerantFilters($filters, $coreFilterNamesAndFunctionsNames, $environment);
-
-        if (! $this->environmentDecorator instanceof TwigEnvironmentDecoratorInterface) {
-            return;
-        }
-
-        $this->environmentDecorator->decorate($environment);
+        $this->decorateTolerantFunctions($functions, $filterNamesAndFunctionNames, $twigEnvironment, $functionsToSkip);
+        $this->decorateTolerantFilters($filters, $filterNamesAndFunctionNames, $twigEnvironment);
     }
 
     /**
@@ -53,8 +45,8 @@ final class TolerantTwigFunctionFilterDecorator
      */
     private function decorateTolerantFunctions(
         array $functions,
-        FilterNamesAndFunctionNames $filterNamesAndFunctionsNames,
-        Environment $environment,
+        FilterNamesAndFunctionNames $filterNamesAndFunctionNames,
+        Environment $twigEnvironment,
         array $skippedFunctionNames
     ): void {
         foreach ($functions as $functionName => $function) {
@@ -63,16 +55,16 @@ final class TolerantTwigFunctionFilterDecorator
             }
 
             if ($functionName === 'constant') {
-                $this->addValidatedConstantFilter($environment);
+                $this->addValidatedConstantFilter($twigEnvironment);
 
                 continue;
             }
 
-            if (in_array($functionName, $filterNamesAndFunctionsNames->getFunctionNames(), true)) {
+            if (in_array($functionName, $filterNamesAndFunctionNames->getFunctionNames(), true)) {
                 // keep as important
-                $environment->addFunction($function);
+                $twigEnvironment->addFunction($function);
             } else {
-                $environment->addFunction(new TwigFunction($functionName, fn () => ''));
+                $twigEnvironment->addFunction(new TwigFunction($functionName, static fn (): string => ''));
             }
         }
     }
@@ -80,28 +72,28 @@ final class TolerantTwigFunctionFilterDecorator
     /**
      * @param TwigFilter[] $filters
      */
-    private function decorateTolerantFilters(array $filters, FilterNamesAndFunctionNames $filterNamesAndFunctionsNames, Environment $environment): void
+    private function decorateTolerantFilters(array $filters, FilterNamesAndFunctionNames $filterNamesAndFunctionNames, Environment $twigEnvironment): void
     {
         foreach ($filters as $filterName => $filter) {
-            if (in_array($filterName, $filterNamesAndFunctionsNames->getFilterNames(), true)) {
+            if (in_array($filterName, $filterNamesAndFunctionNames->getFilterNames(), true)) {
                 // keep as important
-                $environment->addFilter($filter);
+                $twigEnvironment->addFilter($filter);
             } else {
-                $environment->addFilter(new TwigFilter($filterName, fn () => ''));
+                $twigEnvironment->addFilter(new TwigFilter($filterName, static fn (): string => ''));
             }
         }
     }
 
-    private function addValidatedConstantFilter(Environment $environment): void
+    private function addValidatedConstantFilter(Environment $twigEnvironment): void
     {
         /** @see vendor/twig/twig/src/Extension/CoreExtension.php:1654 */
         // special case to validate constants exists
-        $constantTwigFunction = new TwigFunction('constant', function ($constant, $object = null) {
+        $constantTwigFunction = new TwigFunction('constant', static function ($constant, $object = null) {
             if ($object !== null) {
                 $constant = $object::class . '::' . $constant;
             }
 
-            if (defined($constant) === false) {
+            if (! defined($constant)) {
                 $errorMessage = sprintf('Constant "%s" was not found', $constant);
                 throw new TwigConstantNotFoundException($errorMessage);
             }
@@ -109,6 +101,6 @@ final class TolerantTwigFunctionFilterDecorator
             return constant($constant);
         });
 
-        $environment->addFunction($constantTwigFunction);
+        $twigEnvironment->addFunction($constantTwigFunction);
     }
 }
