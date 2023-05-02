@@ -92,10 +92,12 @@ final class TolerantTwigFunctionFilterDecorator
             if ($object !== null) {
                 $constant = $object::class . '::' . $constant;
             }
+
             if (! defined($constant)) {
                 $errorMessage = sprintf('Constant "%s" was not found', $constant);
                 throw new TwigConstantNotFoundException($errorMessage);
             }
+
             return constant($constant);
         });
 

@@ -42,12 +42,13 @@ final class TolerantTwigEnvironmentFactory
         $environment = $this->twigEnvironment;
         $isolatedEnvironment = clone $environment;
 
+        $this->resetExtensionInitialization($isolatedEnvironment);
+
         $this->decorateLoaderWithFiles($isolatedEnvironment, $twigFiles);
 
         // add tolerant functions and filters
         $this->decorateTolerantFiltersAndFunctions($isolatedEnvironment);
 
-        $this->resetExtensionInitialization($isolatedEnvironment);
         $this->decorateTolerantFormThemeTag($isolatedEnvironment);
 
         // required to have tolerant twig, that have no variables
@@ -114,9 +115,9 @@ final class TolerantTwigEnvironmentFactory
         $this->privatesAccessor->setPrivateProperty($extensionSet, 'staging', new StagingExtension());
     }
 
-    private function decorateTolerantFormThemeTag(Environment $environment): void
+    private function decorateTolerantFormThemeTag(Environment $twigEnvironment): void
     {
         $tolerantFormThemeTokenParser = new TolerantFormThemeTokenParser();
-        $environment->addTokenParser($tolerantFormThemeTokenParser);
+        $twigEnvironment->addTokenParser($tolerantFormThemeTokenParser);
     }
 }

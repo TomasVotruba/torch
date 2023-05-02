@@ -19,6 +19,9 @@ final class TolerantFormThemeTokenParser implements TokenParserInterface
 {
     private Parser $parser;
 
+    /**
+     * @return Node<Node>
+     */
     public function parse(Token $token): Node
     {
         // this is needed to process all the expected params
@@ -29,7 +32,7 @@ final class TolerantFormThemeTokenParser implements TokenParserInterface
         return new Node([], [], $token->getLine(), 'div');
     }
 
-    public function setParser(Parser $parser)
+    public function setParser(Parser $parser): void
     {
         $this->parser = $parser;
     }
