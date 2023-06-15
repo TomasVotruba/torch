@@ -6,16 +6,19 @@
     ],
     "require": {
         "php": "^8.1",
-        "laravel/framework": "^10.9",
         "twig/twig": "^2.15",
         "tomasvotruba/punchcard": "^0.2.1",
-        "symfony/twig-bridge": "^6.2"
+        "symfony/twig-bridge": "^6.2",
+        "symfony/console": "^6.3",
+        "illuminate/console": "*",
+        "nette/utils": "^4.0",
+        "illuminate/config": "^10.13"
     },
     "require-dev": {
         "phpstan/phpstan": "^1.10",
         "symplify/easy-coding-standard": "^11.3",
         "rector/rector": "^0.17.1",
-        "phpunit/phpunit": "^10.1",
+        "phpunit/phpunit": "^10.2",
         "symfony/form": "^6.3",
         "symplify/easy-ci": "^11.2"
     },

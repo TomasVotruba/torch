@@ -9,6 +9,7 @@ use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormRegistry;
 use Symfony\Component\Form\ResolvedFormTypeFactory;
+use TomasVotruba\Torch\Contract\TwigEnvironmentDecoratorInterface;
 use TomasVotruba\Torch\Enum\ServiceTag;
 use TomasVotruba\Torch\Reflection\PrivatesAccessor;
 use TomasVotruba\Torch\Twig\TolerantTwigEnvironmentFactory;
@@ -22,16 +23,19 @@ final class AppServicesProvider extends ServiceProvider
         // add twig environment here
         $this->app->singleton(Environment::class, static fn () => require __DIR__ . '/../../twig-environment-provider.php');
 
-        $this->app->singleton(FormFactoryInterface::class, static fn (): \Symfony\Component\Form\FormFactory => // @todo create with full context of form registries :)
-new FormFactory(new FormRegistry([], new ResolvedFormTypeFactory())));
+        $this->app->singleton(
+            FormFactoryInterface::class,
+            static fn (): \Symfony\Component\Form\FormFactory => // @todo create with full context of form registries :)
+new FormFactory(new FormRegistry([], new ResolvedFormTypeFactory()))
+        );
 
-        $this->app->singleton(TolerantTwigEnvironmentFactory::class, fn (): \TomasVotruba\Torch\Twig\TolerantTwigEnvironmentFactory => new TolerantTwigEnvironmentFactory(
+        $this->app->singleton(TolerantTwigEnvironmentFactory::class, fn (): TolerantTwigEnvironmentFactory => new TolerantTwigEnvironmentFactory(
             // @todo can this be done in a simpler way?
             $this->app->make(PrivatesAccessor::class),
             $this->app->make(Environment::class),
             $this->app->make(TolerantTwigFunctionFilterDecorator::class),
             $this->app->make(FormFactoryInterface::class),
-            $this->app->tagged(ServiceTag::TWIG_ENVIRONMENT_DECORATOR)
+            $this->app->tagged(TwigEnvironmentDecoratorInterface::class)
         ));
     }
 

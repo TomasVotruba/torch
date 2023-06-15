@@ -4,26 +4,18 @@ declare(strict_types=1);
 
 namespace TomasVotruba\Torch\Tests;
 
-use Illuminate\Contracts\Console\Kernel;
-use Illuminate\Foundation\Application;
-use Illuminate\Foundation\Testing\TestCase;
+use Illuminate\Container\Container;
+use PHPUnit\Framework\TestCase;
 use Webmozart\Assert\Assert;
 
 abstract class AbstractTestCase extends TestCase
 {
-    /**
-     * This is magically invoked by parent setUp() call
-     * @see \Illuminate\Foundation\Testing\TestCase::refreshApplication()
-     */
-    public function createApplication(): Application
+    protected Container $container;
+
+    protected function setUp(): void
     {
-        $application = require __DIR__ . '/../bootstrap/app.php';
-
-        /** @var Kernel $kernel */
-        $kernel = $application->make(Kernel::class);
-        $kernel->bootstrap();
-
-        return $application;
+        $container = new Container();
+        $this->container = $container;
     }
 
     /**
@@ -33,7 +25,7 @@ abstract class AbstractTestCase extends TestCase
      */
     protected function make(string $type): object
     {
-        $service = $this->app->make($type);
+        $service = $this->container->get($type);
         Assert::isInstanceOf($service, $type);
 
         return $service;

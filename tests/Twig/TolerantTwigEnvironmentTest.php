@@ -6,6 +6,7 @@ namespace TomasVotruba\Torch\Tests\Twig;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
+use TomasVotruba\Torch\Contract\TwigEnvironmentDecoratorInterface;
 use TomasVotruba\Torch\Enum\ServiceTag;
 use TomasVotruba\Torch\Tests\AbstractTestCase;
 use TomasVotruba\Torch\Tests\Twig\Source\SafeEnvironmentDecorator;
@@ -23,9 +24,9 @@ final class TolerantTwigEnvironmentTest extends AbstractTestCase
         parent::setUp();
 
         // dynamic way to add a service, decorate with "dynamicTemplate()" function here
-        app()->bind('twig_environment_decorator', static fn (): \TomasVotruba\Torch\Tests\Twig\Source\SafeEnvironmentDecorator => new SafeEnvironmentDecorator());
+        $this->container->bind('twig_environment_decorator', static fn (): \TomasVotruba\Torch\Tests\Twig\Source\SafeEnvironmentDecorator => new SafeEnvironmentDecorator());
 
-        app()->tag('twig_environment_decorator', ServiceTag::TWIG_ENVIRONMENT_DECORATOR);
+        $this->container->tag('twig_environment_decorator', TwigEnvironmentDecoratorInterface::class);
 
         $this->tolerantTwigEnvironmentFactory = $this->make(TolerantTwigEnvironmentFactory::class);
     }
