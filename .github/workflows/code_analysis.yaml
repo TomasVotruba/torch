@@ -21,7 +21,7 @@ jobs:
 
                     -
                         name: 'Check Active Classes'
-                        run: vendor/bin/easy-ci check-active-class app config --ansi
+                        run: vendor/bin/easy-ci check-active-class app --ansi
 
                     -
                         name: 'Laravel Console'
