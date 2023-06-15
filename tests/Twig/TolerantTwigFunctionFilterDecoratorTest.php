@@ -23,17 +23,17 @@ final class TolerantTwigFunctionFilterDecoratorTest extends AbstractTestCase
 
     public function testFormStart(): void
     {
-        $formStartFunction = $this->tolerantTwigEnvironment->getFunction('form_start');
-        $this->assertInstanceOf(TwigFunction::class, $formStartFunction);
+        $twigFunction = $this->tolerantTwigEnvironment->getFunction('form_start');
+        $this->assertInstanceOf(TwigFunction::class, $twigFunction);
 
-        $this->assertIsCallable($formStartFunction->getCallable());
+        $this->assertIsCallable($twigFunction->getCallable());
     }
 
     public function testFormWidget(): void
     {
-        $formWidget = $this->tolerantTwigEnvironment->getFunction('form_widget');
+        $twigFunction = $this->tolerantTwigEnvironment->getFunction('form_widget');
 
-        $callable = $formWidget->getCallable();
+        $callable = $twigFunction->getCallable();
         $this->assertIsCallable($callable);
 
         $result = ($callable)(null);

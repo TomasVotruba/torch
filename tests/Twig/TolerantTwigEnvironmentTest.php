@@ -34,8 +34,8 @@ final class TolerantTwigEnvironmentTest extends AbstractTestCase
     {
         $this->assertInstanceOf(TolerantTwigEnvironmentFactory::class, $this->tolerantTwigEnvironmentFactory);
 
-        $twig = $this->tolerantTwigEnvironmentFactory->create([]);
-        $this->assertInstanceOf(TolerantTwigEnvironment::class, $twig);
+        $tolerantTwigEnvironment = $this->tolerantTwigEnvironmentFactory->create([]);
+        $this->assertInstanceOf(TolerantTwigEnvironment::class, $tolerantTwigEnvironment);
     }
 
     public function testInvalid(): void
@@ -50,14 +50,14 @@ final class TolerantTwigEnvironmentTest extends AbstractTestCase
     #[DataProvider('provideData')]
     public function testRender(string $templateFilePath, string $expectedRenderedHtmlFilePath): void
     {
-        $tolerantTwig = $this->tolerantTwigEnvironmentFactory->create([$templateFilePath]);
+        $tolerantTwigEnvironment = $this->tolerantTwigEnvironmentFactory->create([$templateFilePath]);
 
-        $source = $tolerantTwig->getLoader()
+        $source = $tolerantTwigEnvironment->getLoader()
             ->getSourceContext($templateFilePath);
 
         $this->assertStringEqualsFile($templateFilePath, $source->getCode());
 
-        $templateContent = $tolerantTwig->render($templateFilePath);
+        $templateContent = $tolerantTwigEnvironment->render($templateFilePath);
         $this->assertStringEqualsFile($expectedRenderedHtmlFilePath, $templateContent);
     }
 
