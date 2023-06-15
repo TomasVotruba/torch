@@ -29,7 +29,7 @@ final class TorchContainerFactory
         );
 
         $container->singleton(TolerantTwigEnvironmentFactory::class, fn (): TolerantTwigEnvironmentFactory => new TolerantTwigEnvironmentFactory(
-        // @todo can this be done in a simpler way?
+            // @todo can this be done in a simpler way?
             $container->make(PrivatesAccessor::class),
             $container->make(Environment::class),
             $container->make(TolerantTwigFunctionFilterDecorator::class),

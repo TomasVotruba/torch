@@ -7,7 +7,6 @@ namespace TomasVotruba\Torch\Tests\Twig;
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use TomasVotruba\Torch\Contract\TwigEnvironmentDecoratorInterface;
-use TomasVotruba\Torch\Enum\ServiceTag;
 use TomasVotruba\Torch\Tests\AbstractTestCase;
 use TomasVotruba\Torch\Tests\Twig\Source\SafeEnvironmentDecorator;
 use TomasVotruba\Torch\Twig\TolerantTwigEnvironment;
