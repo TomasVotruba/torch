@@ -6,6 +6,8 @@ namespace TomasVotruba\Torch\Command;
 
 use Nette\Utils\FileSystem;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Throwable;
 use TomasVotruba\Torch\FileSystem\TwigFileFinder;
@@ -14,12 +16,6 @@ use TomasVotruba\Torch\Twig\TolerantTwigEnvironmentFactory;
 final class RunCommand extends Command
 {
     private readonly string $cacheDirectory;
-
-    /**
-     * @var string
-     * @see https://laravel.com/docs/10.x/artisan#defining-input-expectations
-     */
-    protected $signature = 'run {paths} {--exclude-file:*}';
 
     public function __construct(
         private readonly TolerantTwigEnvironmentFactory $tolerantTwigEnvironmentFactory,
@@ -35,6 +31,9 @@ final class RunCommand extends Command
     {
         $this->setName('generate');
         $this->setDescription('Render twig templates to test their values out');
+
+        $this->addArgument('paths', InputArgument::REQUIRED);
+        $this->addOption('exclude-file', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED);
     }
 
     protected function handle(): int

@@ -6,6 +6,8 @@ namespace TomasVotruba\Torch\Container;
 
 use Illuminate\Container\Container;
 use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -36,7 +38,9 @@ final class TorchContainerFactory
             return $application;
         });
 
-        $container->singleton(SymfonyStyle::class);
+        $container->singleton(SymfonyStyle::class, function (): SymfonyStyle {
+            return new SymfonyStyle(new ArrayInput([]), new ConsoleOutput());
+        });
 
         // add twig environment here
         $container->singleton(Environment::class, static fn () => require __DIR__ . '/../../twig-environment-provider.php');
