@@ -1,9 +1,16 @@
 #!/usr/bin/php
 <?php
 
-$torchContainerFactory = new \TomasVotruba\Torch\Container\TorchContainerFactory();
+use Illuminate\Console\Application;
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Output\ConsoleOutput;
+use TomasVotruba\Torch\Container\TorchContainerFactory;
+
+require __DIR__ . '/../vendor/autoload.php';
+
+$torchContainerFactory = new TorchContainerFactory();
 $container = $torchContainerFactory->create();
 
-/** @var \Illuminate\Console\Application $application */
-$application = $container->get(\Illuminate\Console\Application::class);
-$application->run();
+/** @var Application $application */
+$application = $container->get(Application::class);
+$application->run(new ArgvInput(), new ConsoleOutput());

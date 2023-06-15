@@ -2,11 +2,14 @@
 
 namespace TomasVotruba\Torch\Container;
 
+use Illuminate\Console\Application;
 use Illuminate\Container\Container;
+use Illuminate\Events\Dispatcher;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormRegistry;
 use Symfony\Component\Form\ResolvedFormTypeFactory;
+use TomasVotruba\Torch\Command\RunCommand;
 use TomasVotruba\Torch\Contract\TwigEnvironmentDecoratorInterface;
 use TomasVotruba\Torch\Reflection\PrivatesAccessor;
 use TomasVotruba\Torch\Twig\TolerantTwigEnvironmentFactory;
@@ -18,6 +21,18 @@ final class TorchContainerFactory
     public function create(): Container
     {
         $container = new Container();
+
+        $container->singleton(RunCommand::class);
+
+        // console
+        $container->singleton(Application::class, function (Container $container) {
+            $application = new Application($container, new Dispatcher(), '1.0');
+
+            $runCommand = $container->get(RunCommand::class);
+            $application->add($runCommand);
+
+            return $application;
+        });
 
         // add twig environment here
         $container->singleton(Environment::class, static fn () => require __DIR__ . '/../../twig-environment-provider.php');
