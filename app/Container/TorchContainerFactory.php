@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace TomasVotruba\Torch\Container;
 
-use Illuminate\Console\Application;
 use Illuminate\Container\Container;
-use Illuminate\Events\Dispatcher;
+use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormRegistry;
@@ -28,13 +28,15 @@ final class TorchContainerFactory
 
         // console
         $container->singleton(Application::class, function (Container $container) {
-            $application = new Application($container, new Dispatcher($container), '1.0');
+            $application = new Application('Torch', '1.0');
 
             $runCommand = $container->get(RunCommand::class);
             $application->add($runCommand);
 
             return $application;
         });
+
+        $container->singleton(SymfonyStyle::class);
 
         // add twig environment here
         $container->singleton(Environment::class, static fn () => require __DIR__ . '/../../twig-environment-provider.php');

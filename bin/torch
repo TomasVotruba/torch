@@ -1,7 +1,7 @@
 #!/usr/bin/php
 <?php
 
-use Illuminate\Console\Application;
+use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use TomasVotruba\Torch\Container\TorchContainerFactory;

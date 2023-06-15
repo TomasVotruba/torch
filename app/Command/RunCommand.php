@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace TomasVotruba\Torch\Command;
 
-use Illuminate\Console\Command;
 use Nette\Utils\FileSystem;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Throwable;
 use TomasVotruba\Torch\FileSystem\TwigFileFinder;
@@ -21,31 +21,31 @@ final class RunCommand extends Command
      */
     protected $signature = 'run {paths} {--exclude-file:*}';
 
-    /**
-     * @var string
-     */
-    protected $description = 'Render twig templates to test their values out';
-
     public function __construct(
         private readonly TolerantTwigEnvironmentFactory $tolerantTwigEnvironmentFactory,
         private readonly TwigFileFinder $twigFileFinder,
+        private readonly SymfonyStyle $symfonyStyle,
     ) {
         $this->cacheDirectory = __DIR__ . '/../../../../var/cache/twig';
 
         parent::__construct();
     }
 
+    protected function configure()
+    {
+        $this->setName('generate');
+        $this->setDescription('Render twig templates to test their values out');
+    }
+
     protected function handle(): int
     {
-        $symfonyStyle = new SymfonyStyle($this->input, $this->output);
-
         $twigFiles = $this->findTwigFiles();
-        $this->info(sprintf('Found %d twig files', count($twigFiles)));
+        $this->symfonyStyle->info(sprintf('Found %d twig files', count($twigFiles)));
 
         $tolerantTwigEnvironment = $this->tolerantTwigEnvironmentFactory->create($twigFiles);
 
-        if ($this->output->isDebug()) {
-            $symfonyStyle->progressStart(count($twigFiles));
+        if ($this->symfonyStyle->isDebug()) {
+            $this->symfonyStyle->progressStart(count($twigFiles));
         }
 
         // clear cache, as the files do not override if tag parser changes
@@ -54,17 +54,17 @@ final class RunCommand extends Command
         $invalidFiles = [];
 
         foreach ($twigFiles as $twigFile) {
-            if ($this->output->isDebug()) {
-                $symfonyStyle->writeln($twigFile);
+            if ($this->symfonyStyle->isDebug()) {
+                $this->symfonyStyle->writeln($twigFile);
             } else {
-                $symfonyStyle->progressAdvance();
+                $this->symfonyStyle->progressAdvance();
             }
 
             try {
                 $tolerantTwigEnvironment->render($twigFile);
             } catch (Throwable $throwable) {
                 // in debug, throw exception directly to explore the stack trace
-                if ($this->output->isDebug()) {
+                if ($this->symfonyStyle->isDebug()) {
                     throw $throwable;
                 }
 
@@ -72,18 +72,18 @@ final class RunCommand extends Command
             }
         }
 
-        if (! $this->output->isDebug()) {
-            $symfonyStyle->progressFinish();
+        if (! $this->symfonyStyle->isDebug()) {
+            $this->symfonyStyle->progressFinish();
         }
 
         if ($invalidFiles === []) {
-            $symfonyStyle->success('TWIG files are properly compiled');
+            $this->symfonyStyle->success('TWIG files are properly compiled');
 
             // success
             return self::SUCCESS;
         }
 
-        $this->reportInvalidFiles($symfonyStyle, $invalidFiles, $twigFiles);
+        $this->reportInvalidFiles($invalidFiles, $twigFiles);
 
         return self::FAILURE;
     }
@@ -103,24 +103,22 @@ final class RunCommand extends Command
      * @param string[] $invalidFiles
      * @param string[] $files
      */
-    private function reportInvalidFiles(SymfonyStyle $symfonyStyle, array $invalidFiles, array $files): void
+    private function reportInvalidFiles(array $invalidFiles, array $files): void
     {
         $i = 1;
         foreach ($invalidFiles as $filePath => $fileError) {
             $fileTitle = sprintf('%d) %s', $i, $filePath);
-            $symfonyStyle->title($fileTitle);
-            $symfonyStyle->writeln('    ' . $fileError);
-            $symfonyStyle->newLine(2);
+            $this->symfonyStyle->title($fileTitle);
+            $this->symfonyStyle->writeln('    ' . $fileError);
+            $this->symfonyStyle->newLine(2);
 
             ++$i;
         }
 
-        $errorMessage = sprintf(
+        $this->symfonyStyle->error(sprintf(
             'Failed to compile %d files out of %d',
             count($invalidFiles),
             count($files),
-        );
-
-        $symfonyStyle->error($errorMessage);
+        ));
     }
 }
