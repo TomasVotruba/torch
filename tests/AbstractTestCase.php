@@ -6,6 +6,7 @@ namespace TomasVotruba\Torch\Tests;
 
 use Illuminate\Container\Container;
 use PHPUnit\Framework\TestCase;
+use TomasVotruba\Torch\Container\TorchContainerFactory;
 use Webmozart\Assert\Assert;
 
 abstract class AbstractTestCase extends TestCase
@@ -14,8 +15,8 @@ abstract class AbstractTestCase extends TestCase
 
     protected function setUp(): void
     {
-        $container = new Container();
-        $this->container = $container;
+        $torchContainerFactory = new TorchContainerFactory();
+        $this->container = $torchContainerFactory->create();
     }
 
     /**

@@ -20,12 +20,16 @@
         "rector/rector": "^0.17.1",
         "phpunit/phpunit": "^10.2",
         "symfony/form": "^6.3",
-        "symplify/easy-ci": "^11.2"
+        "symplify/easy-ci": "^11.2",
+        "tracy/tracy": "^2.10"
     },
     "autoload": {
         "psr-4": {
             "TomasVotruba\\Torch\\": "app"
-        }
+        },
+        "files": [
+            "app/functions.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

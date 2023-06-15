@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace TomasVotruba\Torch\Container;
 
 use Illuminate\Console\Application;
@@ -26,7 +28,7 @@ final class TorchContainerFactory
 
         // console
         $container->singleton(Application::class, function (Container $container) {
-            $application = new Application($container, new Dispatcher(), '1.0');
+            $application = new Application($container, new Dispatcher($container), '1.0');
 
             $runCommand = $container->get(RunCommand::class);
             $application->add($runCommand);
@@ -43,23 +45,6 @@ final class TorchContainerFactory
             new FormFactory(new FormRegistry([], new ResolvedFormTypeFactory()))
         );
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-        $container->singleton(TolerantTwigEnvironmentFactory::class, fn (): TolerantTwigEnvironmentFactory => new TolerantTwigEnvironmentFactory(
-            // @todo can this be done in a simpler way?
-            $container->make(PrivatesAccessor::class),
-            $container->make(Environment::class),
-            $container->make(TolerantTwigFunctionFilterDecorator::class),
-            $container->make(FormFactoryInterface::class),
-            $container->tagged(TwigEnvironmentDecoratorInterface::class)
-        ));
-=======
-=======
-<<<<<<< HEAD
->>>>>>> 5f60b00 (fixup! misc)
-=======
->>>>>>> 0639a4d (misc)
->>>>>>> 5826ded (misc)
         $container->singleton(
             TolerantTwigEnvironmentFactory::class,
             fn (): TolerantTwigEnvironmentFactory => new TolerantTwigEnvironmentFactory(
@@ -70,20 +55,11 @@ final class TorchContainerFactory
                 $container->tagged(TwigEnvironmentDecoratorInterface::class)
             )
         );
-<<<<<<< HEAD
 
         // set default parameters - must be an array
         config([
             'parameters.functions_to_skip' => [],
         ]);
-<<<<<<< HEAD
->>>>>>> 5d9991c (fixup! misc)
-=======
-<<<<<<< HEAD
->>>>>>> 5f60b00 (fixup! misc)
-=======
->>>>>>> 0639a4d (misc)
->>>>>>> 5826ded (misc)
 
         return $container;
     }

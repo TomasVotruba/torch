@@ -31,7 +31,6 @@ final class TolerantTwigFunctionFilterDecorator
         $filterNamesAndFunctionNames = $this->twigCoreFunctionsAndFiltersResolver->resolve($twigEnvironment);
 
         $functionsToSkip = config('parameters.functions_to_skip');
-
         Assert::isArray($functionsToSkip);
         Assert::allString($functionsToSkip);
 

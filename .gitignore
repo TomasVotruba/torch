@@ -3,5 +3,3 @@ composer.lock
 
 
 .phpunit.cache
-
-/storage/*
