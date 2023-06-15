@@ -12,7 +12,8 @@
         "symfony/console": "^6.3",
         "nette/utils": "^4.0",
         "illuminate/config": "^10.13",
-        "illuminate/container": "^10.13"
+        "illuminate/container": "^10.13",
+        "symfony/finder": "^6.3"
     },
     "require-dev": {
         "phpstan/phpstan": "^1.10",

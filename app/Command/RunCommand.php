@@ -7,7 +7,9 @@ namespace TomasVotruba\Torch\Command;
 use Nette\Utils\FileSystem;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Throwable;
 use TomasVotruba\Torch\FileSystem\TwigFileFinder;
@@ -36,9 +38,9 @@ final class RunCommand extends Command
         $this->addOption('exclude-file', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED);
     }
 
-    protected function handle(): int
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $twigFiles = $this->findTwigFiles();
+        $twigFiles = $this->findTwigFiles($input);
         $this->symfonyStyle->info(sprintf('Found %d twig files', count($twigFiles)));
 
         $tolerantTwigEnvironment = $this->tolerantTwigEnvironmentFactory->create($twigFiles);
@@ -90,10 +92,10 @@ final class RunCommand extends Command
     /**
      * @return string[]
      */
-    private function findTwigFiles(): array
+    private function findTwigFiles(InputInterface $input): array
     {
-        $paths = (array) $this->argument('paths');
-        $excludedFiles = (array) $this->option('exclude-file');
+        $paths = (array) $input->getArgument('paths');
+        $excludedFiles = (array) $input->getOption('exclude-file');
 
         return $this->twigFileFinder->findInDirectories($paths, $excludedFiles);
     }
