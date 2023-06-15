@@ -1,4 +1,9 @@
 #!/usr/bin/php
 <?php
 
-require __DIR__ . '/../artisan';
+$torchContainerFactory = new \TomasVotruba\Torch\Container\TorchContainerFactory();
+$container = $torchContainerFactory->create();
+
+/** @var \Illuminate\Console\Application $application */
+$application = $container->get(\Illuminate\Console\Application::class);
+$application->run();
