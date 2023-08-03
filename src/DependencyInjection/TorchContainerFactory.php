@@ -31,18 +31,14 @@ final class TorchContainerFactory
         $container = new Container();
 
         // console
-        $container->singleton(Application::class, function (Container $container) {
+        $container->singleton(Application::class, static function (Container $container): \Symfony\Component\Console\Application {
             $application = new Application('Torch', '1.0');
-
             $runCommand = $container->make(RunCommand::class);
             $application->add($runCommand);
-
             return $application;
         });
 
-        $container->singleton(SymfonyStyle::class, function (): SymfonyStyle {
-            return new SymfonyStyle(new ArrayInput([]), new ConsoleOutput());
-        });
+        $container->singleton(SymfonyStyle::class, static fn (): SymfonyStyle => new SymfonyStyle(new ArrayInput([]), new ConsoleOutput()));
 
         // add twig environment here
         $container->singleton(Environment::class, static fn () => require __DIR__ . '/../../twig-environment-provider.php');
@@ -55,7 +51,7 @@ final class TorchContainerFactory
 
         $container->singleton(
             TolerantTwigEnvironmentFactory::class,
-            fn (): TolerantTwigEnvironmentFactory => new TolerantTwigEnvironmentFactory(
+            static fn (): TolerantTwigEnvironmentFactory => new TolerantTwigEnvironmentFactory(
                 $container->get(PrivatesAccessor::class),
                 $container->get(Environment::class),
                 $container->get(TolerantTwigFunctionFilterDecorator::class),

@@ -29,7 +29,7 @@ final class RunCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('run');
         $this->setDescription('Render twig templates to test their values out');
