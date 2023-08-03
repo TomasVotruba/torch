@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace TomasVotruba\Torch\Command;
 
-use Nette\Utils\FileSystem;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -12,6 +11,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Throwable;
+use TomasVotruba\Torch\FileSystem\FileSystem;
 use TomasVotruba\Torch\FileSystem\TwigFileFinder;
 use TomasVotruba\Torch\Twig\TolerantTwigEnvironmentFactory;
 
@@ -50,7 +50,7 @@ final class RunCommand extends Command
         }
 
         // clear cache, as the files do not override if tag parser changes
-        FileSystem::delete($this->cacheDirectory);
+        FileSystem::deleteDirectory($this->cacheDirectory);
 
         $invalidFiles = [];
 

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace TomasVotruba\Torch\Twig;
 
-use Nette\Utils\FileSystem;
 use Symfony\Bridge\Twig\Extension\FormExtension;
 use Symfony\Component\Form\FormFactoryInterface;
 use TomasVotruba\Torch\Contract\TwigEnvironmentDecoratorInterface;
+use TomasVotruba\Torch\FileSystem\FileSystem;
 use TomasVotruba\Torch\Reflection\PrivatesAccessor;
 use TomasVotruba\Torch\Twig\TokenParser\TolerantFormThemeTokenParser;
 use TomasVotruba\Torch\ValueObject\DummyTheme;
