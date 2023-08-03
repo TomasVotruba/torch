@@ -14,6 +14,7 @@ use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormRegistry;
 use Symfony\Component\Form\ResolvedFormTypeFactory;
 use TomasVotruba\Torch\Command\RunCommand;
+use TomasVotruba\Torch\Config\StaticParameterProvider;
 use TomasVotruba\Torch\Contract\TwigEnvironmentDecoratorInterface;
 use TomasVotruba\Torch\Reflection\PrivatesAccessor;
 use TomasVotruba\Torch\Twig\TolerantTwigEnvironmentFactory;
@@ -64,9 +65,7 @@ final class TorchContainerFactory
         );
 
         // set default parameters - must be an array
-        config([
-            'parameters.functions_to_skip' => [],
-        ]);
+        StaticParameterProvider::set('parameters.functions_to_skip', []);
 
         return $container;
     }

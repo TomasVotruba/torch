@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TomasVotruba\Torch\Twig;
 
+use TomasVotruba\Torch\Config\StaticParameterProvider;
 use TomasVotruba\Torch\Exception\TwigConstantNotFoundException;
 use TomasVotruba\Torch\ValueObject\FilterNamesAndFunctionNames;
 use Twig\Environment;
@@ -30,7 +31,7 @@ final class TolerantTwigFunctionFilterDecorator
         /** @see inspiration https://gist.github.com/TomasVotruba/b3520601c474fbea0488cc74c08e18fb */
         $filterNamesAndFunctionNames = $this->twigCoreFunctionsAndFiltersResolver->resolve($twigEnvironment);
 
-        $functionsToSkip = config('parameters.functions_to_skip');
+        $functionsToSkip = StaticParameterProvider::get('parameters.functions_to_skip');
         Assert::isArray($functionsToSkip);
         Assert::allString($functionsToSkip);
 
