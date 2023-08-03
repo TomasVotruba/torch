@@ -1,22 +1,25 @@
 <?php
 
-declare(strict_types=1);
-
-namespace TomasVotruba\Torch\Config;
+declare (strict_types=1);
+namespace Torch202308\TomasVotruba\Torch\Config;
 
 final class StaticParameterProvider
 {
     /**
      * @var array<string, mixed>
      */
-    private static array $parameters = [];
-
-    public static function set(string $name, mixed $value): void
+    private static $parameters = [];
+    /**
+     * @param mixed $value
+     */
+    public static function set(string $name, $value) : void
     {
         self::$parameters[$name] = $value;
     }
-
-    public static function get(string $name): mixed
+    /**
+     * @return mixed
+     */
+    public static function get(string $name)
     {
         return self::$parameters[$name] ?? null;
     }

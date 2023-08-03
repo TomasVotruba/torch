@@ -1,17 +1,15 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
+namespace Torch202308\TomasVotruba\Torch\Twig;
 
-namespace TomasVotruba\Torch\Twig;
-
-use Symfony\Component\Form\FormFactoryInterface;
-use TomasVotruba\Torch\Form\SimpleFormType;
-use Twig\Environment;
-use Twig\Loader\LoaderInterface;
-use Twig\TwigFilter;
-use Twig\TwigFunction;
-use Webmozart\Assert\Assert;
-
+use Torch202308\Symfony\Component\Form\FormFactoryInterface;
+use Torch202308\TomasVotruba\Torch\Form\SimpleFormType;
+use Torch202308\Twig\Environment;
+use Torch202308\Twig\Loader\LoaderInterface;
+use Torch202308\Twig\TwigFilter;
+use Torch202308\Twig\TwigFunction;
+use Torch202308\Webmozart\Assert\Assert;
 /**
  * This class is a tolerant wrapper around Twig\Environment.
  *
@@ -23,47 +21,50 @@ use Webmozart\Assert\Assert;
  */
 final class TolerantTwigEnvironment
 {
-    public function __construct(
-        private readonly Environment $twigEnvironment,
-        private readonly FormFactoryInterface $formFactory
-    ) {
+    /**
+     * @readonly
+     * @var \Twig\Environment
+     */
+    private $twigEnvironment;
+    /**
+     * @readonly
+     * @var \Symfony\Component\Form\FormFactoryInterface
+     */
+    private $formFactory;
+    public function __construct(Environment $twigEnvironment, FormFactoryInterface $formFactory)
+    {
+        $this->twigEnvironment = $twigEnvironment;
+        $this->formFactory = $formFactory;
     }
-
     /**
      * @param array<string, mixed> $context
      */
-    public function render(string $name, array $context = []): string
+    public function render(string $name, array $context = []) : string
     {
         // add dummy form to allow simple renders
-        if (! isset($context['form'])) {
+        if (!isset($context['form'])) {
             $form = $this->formFactory->create(SimpleFormType::class);
             $context['form'] = $form->createView();
         }
-
         return $this->twigEnvironment->render($name, $context);
     }
-
     /**
      * @api used in tests
      */
-    public function getLoader(): LoaderInterface
+    public function getLoader() : LoaderInterface
     {
         return $this->twigEnvironment->getLoader();
     }
-
-    public function getFunction(string $functionName): TwigFunction
+    public function getFunction(string $functionName) : TwigFunction
     {
         $twigFunction = $this->twigEnvironment->getFunction($functionName);
         Assert::isInstanceOf($twigFunction, TwigFunction::class);
-
         return $twigFunction;
     }
-
-    public function getFilter(string $filterName): TwigFilter
+    public function getFilter(string $filterName) : TwigFilter
     {
         $twigFilter = $this->twigEnvironment->getFilter($filterName);
         Assert::isInstanceOf($twigFilter, TwigFilter::class);
-
         return $twigFilter;
     }
 }
