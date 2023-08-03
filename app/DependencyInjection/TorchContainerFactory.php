@@ -20,6 +20,9 @@ use TomasVotruba\Torch\Twig\TolerantTwigEnvironmentFactory;
 use TomasVotruba\Torch\Twig\TolerantTwigFunctionFilterDecorator;
 use Twig\Environment;
 
+/**
+ * @api used in bin and tests
+ */
 final class TorchContainerFactory
 {
     public function create(): Container

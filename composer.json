@@ -1,8 +1,10 @@
 {
     "name": "tomasvotruba/torch",
     "license": "sponsorware",
+    "description": "Smoke testing of TWIG templates",
     "bin": [
-        "bin/torch"
+        "bin/torch",
+        "bin/torch.php"
     ],
     "require": {
         "php": "^8.1",
