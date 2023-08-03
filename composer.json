@@ -39,6 +39,12 @@
     "config": {
         "sort-packages": true
     },
+    "replace": {
+        "symfony/polyfill-ctype": "*",
+        "symfony/polyfill-intl-grapheme": "*",
+        "symfony/polyfill-intl-normalizer": "*",
+        "symfony/polyfill-mbstring": "*"
+    },
     "scripts": {
         "phpstan": "vendor/bin/phpstan analyse --ansi",
         "check-cs": "vendor/bin/ecs check --ansi",
