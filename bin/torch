@@ -1,16 +1,4 @@
 #!/usr/bin/php
 <?php
 
-use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\Console\Output\ConsoleOutput;
-use TomasVotruba\Torch\Container\TorchContainerFactory;
-
-require __DIR__ . '/../vendor/autoload.php';
-
-$torchContainerFactory = new TorchContainerFactory();
-$container = $torchContainerFactory->create();
-
-/** @var Application $application */
-$application = $container->get(Application::class);
-$application->run(new ArgvInput(), new ConsoleOutput());
+require __DIR__ . '/torch.php';

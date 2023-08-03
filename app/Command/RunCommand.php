@@ -31,7 +31,7 @@ final class RunCommand extends Command
 
     protected function configure()
     {
-        $this->setName('generate');
+        $this->setName('run');
         $this->setDescription('Render twig templates to test their values out');
 
         $this->addArgument('paths', InputArgument::REQUIRED);

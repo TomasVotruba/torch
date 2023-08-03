@@ -21,11 +21,7 @@ jobs:
 
                     -
                         name: 'Check Active Classes'
-                        run: vendor/bin/easy-ci check-active-class app --ansi
-
-                    -
-                        name: 'Laravel Console'
-                        run: php artisan --ansi
+                        run: vendor/bin/class-leak check app --ansi
 
         name: ${{ matrix.actions.name }}
         runs-on: ubuntu-latest
