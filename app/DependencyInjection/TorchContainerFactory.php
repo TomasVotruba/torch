@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TomasVotruba\Torch\Container;
+namespace TomasVotruba\Torch\DependencyInjection;
 
 use Illuminate\Container\Container;
 use Symfony\Component\Console\Application;
@@ -20,19 +20,20 @@ use TomasVotruba\Torch\Twig\TolerantTwigEnvironmentFactory;
 use TomasVotruba\Torch\Twig\TolerantTwigFunctionFilterDecorator;
 use Twig\Environment;
 
+/**
+ * @api used in bin and tests
+ */
 final class TorchContainerFactory
 {
     public function create(): Container
     {
         $container = new Container();
 
-        $container->singleton(RunCommand::class);
-
         // console
         $container->singleton(Application::class, function (Container $container) {
             $application = new Application('Torch', '1.0');
 
-            $runCommand = $container->get(RunCommand::class);
+            $runCommand = $container->make(RunCommand::class);
             $application->add($runCommand);
 
             return $application;

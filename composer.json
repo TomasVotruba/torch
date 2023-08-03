@@ -1,27 +1,30 @@
 {
     "name": "tomasvotruba/torch",
     "license": "sponsorware",
+    "description": "Smoke testing of TWIG templates",
     "bin": [
-        "bin/torch"
+        "bin/torch",
+        "bin/torch.php"
     ],
     "require": {
         "php": "^8.1",
-        "twig/twig": "^2.15",
-        "tomasvotruba/punchcard": "^0.2.7",
-        "symfony/twig-bridge": "^6.2",
-        "symfony/console": "^6.3",
+        "illuminate/config": "^10.17",
+        "illuminate/container": "^10.17",
         "nette/utils": "^4.0",
-        "illuminate/config": "^10.13",
-        "illuminate/container": "^10.13",
-        "symfony/finder": "^6.3"
+        "symfony/console": "^6.3",
+        "symfony/finder": "^6.3",
+        "symfony/twig-bridge": "^6.3",
+        "twig/twig": "^2.15",
+        "webmozart/assert": "^1.11"
     },
     "require-dev": {
         "phpstan/phpstan": "^1.10",
-        "symplify/easy-coding-standard": "^11.3",
-        "rector/rector": "^0.17.1",
         "phpunit/phpunit": "^10.2",
+        "rector/rector": "^0.17",
         "symfony/form": "^6.3",
         "symplify/easy-ci": "^11.2",
+        "symplify/easy-coding-standard": "^12.0",
+        "tomasvotruba/class-leak": "0.1.1.72",
         "tracy/tracy": "^2.10"
     },
     "autoload": {
@@ -36,6 +39,9 @@
         "psr-4": {
             "TomasVotruba\\Torch\\Tests\\": "tests"
         }
+    },
+    "config": {
+        "sort-packages": true
     },
     "scripts": {
         "phpstan": "vendor/bin/phpstan analyse --ansi",
