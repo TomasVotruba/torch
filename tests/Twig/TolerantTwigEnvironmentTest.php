@@ -23,7 +23,7 @@ final class TolerantTwigEnvironmentTest extends AbstractTestCase
         parent::setUp();
 
         // dynamic way to add a service, decorate with "dynamicTemplate()" function here
-        $this->container->bind('twig_environment_decorator', static fn (): \TomasVotruba\Torch\Tests\Twig\Source\SafeEnvironmentDecorator => new SafeEnvironmentDecorator());
+        $this->container->bind('twig_environment_decorator', static fn (): SafeEnvironmentDecorator => new SafeEnvironmentDecorator());
 
         $this->container->tag('twig_environment_decorator', TwigEnvironmentDecoratorInterface::class);
 

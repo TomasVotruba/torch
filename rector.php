@@ -12,6 +12,8 @@ return static function (RectorConfig $rectorConfig): void {
         __DIR__ . '/tests',
     ]);
 
+    $rectorConfig->importNames();
+
     $rectorConfig->sets([
         LevelSetList::UP_TO_PHP_81,
         SetList::TYPE_DECLARATION,
