@@ -3,16 +3,14 @@
 namespace TomasVotruba\Torch\FileSystem;
 
 use FilesystemIterator;
-use TomasVotruba\Torch\Exception\ShouldNotHappenException;
+use Webmozart\Assert\Assert;
 
 final class FileSystem
 {
     public static function read(string $filePath): string
     {
         $fileContents = file_get_contents($filePath);
-        if ($fileContents === false) {
-            throw new ShouldNotHappenException(sprintf('Unable to read "%s" filePath', $filePath));
-        }
+        Assert::string($fileContents);
 
         return $fileContents;
     }
