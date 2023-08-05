@@ -16,8 +16,8 @@ if (isset($argv[1])) {
         $content = file_get_contents($filename);
 
         // @see https://regex101.com/r/mDVShh/1
-        $pattern = '#^if\s*\(!\s*function_exists\s*\((.*?)\)\s*\{(.*?)\}$#sm';
-        $replacement = '$1// $0';
+        $pattern = '#^if\s*\(!\s*function_exists\s*\((.*?)\)\s*\{(.*?)\}$#m';
+        $replacement = '// $0';
 
         // Perform the replacement
         $modifiedContent = preg_replace($pattern, $replacement, $content);
