@@ -9,16 +9,11 @@ use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Form\FormFactory;
-use Symfony\Component\Form\FormFactoryInterface;
-use Symfony\Component\Form\FormRegistry;
-use Symfony\Component\Form\ResolvedFormTypeFactory;
 use TomasVotruba\Torch\Command\RunCommand;
 use TomasVotruba\Torch\Config\StaticParameterProvider;
 use TomasVotruba\Torch\Contract\TwigEnvironmentDecoratorInterface;
-use TomasVotruba\Torch\Reflection\PrivatesAccessor;
+use TomasVotruba\Torch\Enum\ParameterName;
 use TomasVotruba\Torch\Twig\TolerantTwigEnvironmentFactory;
-use TomasVotruba\Torch\Twig\TolerantTwigFunctionFilterDecorator;
 use Twig\Environment;
 use Webmozart\Assert\Assert;
 
@@ -49,25 +44,13 @@ final class TorchContainerFactory
             return require $torchConfigFilePath;
         });
 
-        $container->singleton(
-            FormFactoryInterface::class,
-            static fn (): FormFactory => // @todo create with full context of form registries :)
-            new FormFactory(new FormRegistry([], new ResolvedFormTypeFactory()))
-        );
-
-        $container->singleton(
-            TolerantTwigEnvironmentFactory::class,
-            static fn (): TolerantTwigEnvironmentFactory => new TolerantTwigEnvironmentFactory(
-                $container->get(PrivatesAccessor::class),
-                $container->get(Environment::class),
-                $container->get(TolerantTwigFunctionFilterDecorator::class),
-                $container->get(FormFactoryInterface::class),
-                $container->tagged(TwigEnvironmentDecoratorInterface::class)
-            )
-        );
+        $container->singleton(TolerantTwigEnvironmentFactory::class);
+        $container->when(TolerantTwigEnvironmentFactory::class)
+            ->needs('$twigEnvironmentDecorators')
+            ->giveTagged(TwigEnvironmentDecoratorInterface::class);
 
         // set default parameters - must be an array
-        StaticParameterProvider::set('parameters.functions_to_skip', []);
+        StaticParameterProvider::set(ParameterName::FUNCTIONS_TO_SKIP, []);
 
         return $container;
     }

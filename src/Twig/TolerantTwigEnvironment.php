@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace TomasVotruba\Torch\Twig;
 
-use Symfony\Component\Form\FormFactoryInterface;
-use TomasVotruba\Torch\Form\SimpleFormType;
+use Symfony\Component\Form\FormView;
 use Twig\Environment;
 use Twig\Loader\LoaderInterface;
 use Twig\TwigFilter;
@@ -25,7 +24,6 @@ final class TolerantTwigEnvironment
 {
     public function __construct(
         private readonly Environment $twigEnvironment,
-        private readonly FormFactoryInterface $formFactory
     ) {
     }
 
@@ -34,10 +32,9 @@ final class TolerantTwigEnvironment
      */
     public function render(string $name, array $context = []): string
     {
-        // add dummy form to allow simple renders
+        // add dummy form view to allow simple renders
         if (! isset($context['form'])) {
-            $form = $this->formFactory->create(SimpleFormType::class);
-            $context['form'] = $form->createView();
+            $context['form'] = new FormView();
         }
 
         return $this->twigEnvironment->render($name, $context);

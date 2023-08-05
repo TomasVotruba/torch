@@ -40,6 +40,11 @@ mv scoped-code/* .
 note "Dumping Composer Autoload"
 composer dump-autoload --ansi --classmap-authoritative --no-dev
 
+
+# remove scoping of functions, to avoid conflicts
+php build/escape-twig-functions.php vendor/scoper-autoload.php
+
+
 # make bin runnable without "php"
 chmod 777 "bin/torch"
 chmod 777 "bin/torch.php"
