@@ -13,6 +13,7 @@ use TomasVotruba\Torch\Command\RunCommand;
 use TomasVotruba\Torch\Config\StaticParameterProvider;
 use TomasVotruba\Torch\Contract\TwigEnvironmentDecoratorInterface;
 use TomasVotruba\Torch\Enum\ParameterName;
+use TomasVotruba\Torch\Helpers\PrivatesAccessor;
 use TomasVotruba\Torch\Twig\TolerantTwigEnvironmentFactory;
 use Twig\Environment;
 use Webmozart\Assert\Assert;
@@ -31,6 +32,14 @@ final class TorchContainerFactory
             $application = new Application('Torch', '1.0');
             $runCommand = $container->make(RunCommand::class);
             $application->add($runCommand);
+
+            // keep only relevant commands
+            PrivatesAccessor::propertyClosure($application, 'commands', function (array $commands) {
+                unset($commands['help']);
+                unset($commands['completion']);
+                return $commands;
+            });
+
             return $application;
         });
 

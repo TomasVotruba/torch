@@ -16,7 +16,7 @@ if (isset($argv[1])) {
         $content = file_get_contents($filename);
 
         // Define the regex pattern and replacement
-        $pattern = '/^(\\s*)if\\s*\\(\\s*!\\s*function_exists\\s*\\([^)]*\\)\\s*\\)/m';
+        $pattern = '/^(\s*)if\s*\(\s*!\\s*function_exists\\s*\\([^)]*\\)\\s*\\)/m';
         $replacement = '$1// $0';
 
         // Perform the replacement
