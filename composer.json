@@ -2,53 +2,16 @@
     "name": "tomasvotruba/torch",
     "license": "sponsorware",
     "description": "Smoke testing of TWIG templates",
+    "require": {
+        "php": ">=7.2"
+    },
     "bin": [
         "bin/torch",
         "bin/torch.php"
     ],
-    "require": {
-        "php": "^8.1",
-        "illuminate/container": "^10.17",
-        "symfony/console": "^6.3",
-        "symfony/finder": "^6.3",
-        "symfony/twig-bridge": "^6.3",
-        "twig/twig": "^2.15",
-        "webmozart/assert": "^1.11"
-    },
-    "require-dev": {
-        "phpstan/phpstan": "^1.10",
-        "phpunit/phpunit": "^10.2",
-        "rector/rector": "^0.17.10",
-        "symfony/form": "^6.3",
-        "symplify/easy-ci": "^11.2",
-        "symplify/easy-coding-standard": "^12.0",
-        "tomasvotruba/class-leak": "0.1.1.72",
-        "tracy/tracy": "^2.10"
-    },
     "autoload": {
         "psr-4": {
             "TomasVotruba\\Torch\\": "src"
         }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "TomasVotruba\\Torch\\Tests\\": "tests"
-        }
-    },
-    "config": {
-        "sort-packages": true,
-        "platform-check": false
-    },
-    "replace": {
-        "symfony/polyfill-php72": "*",
-        "symfony/polyfill-ctype": "*",
-        "symfony/polyfill-intl-grapheme": "*",
-        "symfony/polyfill-intl-normalizer": "*",
-        "symfony/polyfill-mbstring": "*"
-    },
-    "scripts": {
-        "phpstan": "vendor/bin/phpstan analyse --ansi",
-        "check-cs": "vendor/bin/ecs check --ansi",
-        "fix-cs": "vendor/bin/ecs check --fix --ansi"
     }
 }
