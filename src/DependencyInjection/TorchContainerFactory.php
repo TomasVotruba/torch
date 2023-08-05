@@ -20,6 +20,7 @@ use TomasVotruba\Torch\Reflection\PrivatesAccessor;
 use TomasVotruba\Torch\Twig\TolerantTwigEnvironmentFactory;
 use TomasVotruba\Torch\Twig\TolerantTwigFunctionFilterDecorator;
 use Twig\Environment;
+use Webmozart\Assert\Assert;
 
 /**
  * @api used in bin and tests
@@ -40,8 +41,13 @@ final class TorchContainerFactory
 
         $container->singleton(SymfonyStyle::class, static fn (): SymfonyStyle => new SymfonyStyle(new ArrayInput([]), new ConsoleOutput()));
 
-        // add twig environment here
-        $container->singleton(Environment::class, static fn () => require __DIR__ . '/../../twig-environment-provider.php');
+        // add app's twig environment
+        $container->singleton(Environment::class, function (): Environment {
+            $torchConfigFilePath = getcwd() . '/torch.php';
+            Assert::fileExists($torchConfigFilePath);
+
+            return require $torchConfigFilePath;
+        });
 
         $container->singleton(
             FormFactoryInterface::class,
