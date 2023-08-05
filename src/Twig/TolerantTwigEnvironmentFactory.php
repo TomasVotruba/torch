@@ -7,6 +7,7 @@ namespace TomasVotruba\Torch\Twig;
 use Symfony\Bridge\Twig\Extension\FormExtension;
 use TomasVotruba\Torch\Contract\TwigEnvironmentDecoratorInterface;
 use TomasVotruba\Torch\FileSystem\FileSystem;
+use TomasVotruba\Torch\Helpers\PrivatesAccessor;
 use TomasVotruba\Torch\Twig\TokenParser\TolerantFormThemeTokenParser;
 use TomasVotruba\Torch\ValueObject\DummyTheme;
 use Twig\Environment;
@@ -105,10 +106,10 @@ final class TolerantTwigEnvironmentFactory
     {
         // TWIG 2
         /** @var ExtensionSet $extensionSet */
-        $extensionSet = \TomasVotruba\Torch\Helpers\PrivatesAccessor::getPrivateProperty($twigEnvironment, 'extensionSet');
+        $extensionSet = PrivatesAccessor::getPrivateProperty($twigEnvironment, 'extensionSet');
 
-        \TomasVotruba\Torch\Helpers\PrivatesAccessor::setPrivateProperty($extensionSet, 'initialized', false);
-        \TomasVotruba\Torch\Helpers\PrivatesAccessor::setPrivateProperty($extensionSet, 'staging', new StagingExtension());
+        PrivatesAccessor::setPrivateProperty($extensionSet, 'initialized', false);
+        PrivatesAccessor::setPrivateProperty($extensionSet, 'staging', new StagingExtension());
     }
 
     private function decorateTolerantFormThemeTag(Environment $twigEnvironment): void
