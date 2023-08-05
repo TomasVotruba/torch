@@ -7,7 +7,6 @@ namespace TomasVotruba\Torch\Twig;
 use Symfony\Bridge\Twig\Extension\FormExtension;
 use TomasVotruba\Torch\Contract\TwigEnvironmentDecoratorInterface;
 use TomasVotruba\Torch\FileSystem\FileSystem;
-use TomasVotruba\Torch\Reflection\PrivatesAccessor;
 use TomasVotruba\Torch\Twig\TokenParser\TolerantFormThemeTokenParser;
 use TomasVotruba\Torch\ValueObject\DummyTheme;
 use Twig\Environment;
@@ -25,7 +24,6 @@ final class TolerantTwigEnvironmentFactory
      * @param TwigEnvironmentDecoratorInterface[] $twigEnvironmentDecorators
      */
     public function __construct(
-        private readonly PrivatesAccessor $privatesAccessor,
         private readonly Environment $twigEnvironment,
         private readonly TolerantTwigFunctionFilterDecorator $tolerantTwigFunctionFilterDecorator,
         private readonly array $twigEnvironmentDecorators
@@ -107,10 +105,10 @@ final class TolerantTwigEnvironmentFactory
     {
         // TWIG 2
         /** @var ExtensionSet $extensionSet */
-        $extensionSet = $this->privatesAccessor->getPrivateProperty($twigEnvironment, 'extensionSet');
+        $extensionSet = \TomasVotruba\Torch\Helpers\PrivatesAccessor::getPrivateProperty($twigEnvironment, 'extensionSet');
 
-        $this->privatesAccessor->setPrivateProperty($extensionSet, 'initialized', false);
-        $this->privatesAccessor->setPrivateProperty($extensionSet, 'staging', new StagingExtension());
+        \TomasVotruba\Torch\Helpers\PrivatesAccessor::setPrivateProperty($extensionSet, 'initialized', false);
+        \TomasVotruba\Torch\Helpers\PrivatesAccessor::setPrivateProperty($extensionSet, 'staging', new StagingExtension());
     }
 
     private function decorateTolerantFormThemeTag(Environment $twigEnvironment): void
