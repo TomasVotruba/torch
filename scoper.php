@@ -10,5 +10,6 @@ return [
     'exclude-namespaces' => ['#^TomasVotruba\\\\Torch#'],
     'exclude-classes' => [
         'Twig\Environment',
+        'PHPUnit\Framework\TestCase',
     ],
 ];
