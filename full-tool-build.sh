@@ -7,7 +7,7 @@ composer install --ansi
 composer update --no-dev --ansi
 
 # remove tests and useless files, to make downgraded, scoped and deployed codebase as small as possible
-rm -rf tests
+rm -rf tests vendor/twig/twig/src/Test
 
 # downgrade with rector
 mkdir rector-local && composer require rector/rector --working-dir rector-local
