@@ -10,7 +10,6 @@
         "php": "^8.1",
         "illuminate/container": "^10.17",
         "symfony/console": "^6.3",
-        "symfony/form": "^6.3",
         "symfony/finder": "^6.3",
         "symfony/twig-bridge": "^6.3",
         "twig/twig": "^2.15",
@@ -28,7 +27,10 @@
     "autoload": {
         "psr-4": {
             "TomasVotruba\\Torch\\": "src"
-        }
+        },
+        "classmap": [
+            "stubs"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
