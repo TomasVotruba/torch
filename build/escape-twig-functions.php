@@ -15,8 +15,8 @@ if (isset($argv[1])) {
         // Read the content from the file
         $content = file_get_contents($filename);
 
-        // Define the regex pattern and replacement
-        $pattern = '/if\s*!\s*function_exists\s*\([^)]*\)\s*{[^}]*}/s';
+        // @see https://regex101.com/r/jQl1gx/1
+        $pattern = '/if\s*\(!\s*function_exists\s*\([^)]*\)\s*{[^}]*}/s';
         $replacement = '$1// $0';
 
         // Perform the replacement
