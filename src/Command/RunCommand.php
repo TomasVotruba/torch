@@ -24,7 +24,7 @@ final class RunCommand extends Command
         private readonly TwigFileFinder $twigFileFinder,
         private readonly SymfonyStyle $symfonyStyle,
     ) {
-        $this->cacheDirectory = __DIR__ . '/../../../../var/cache/twig';
+        $this->cacheDirectory = sys_get_temp_dir(). '/torch_twig_cache';
 
         parent::__construct();
     }
