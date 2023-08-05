@@ -33,10 +33,11 @@ jobs:
             -   run: mkdir rector-local && composer require rector/rector --working-dir rector-local --ansi --dev
 
             # downgrade to PHP 7.2
+
             -   run: rector-local/vendor/bin/rector process src bin vendor --config build/rector-downgrade-php-72.php --ansi
 
             # clear the dev files
-            -   run: rm -rf tests ecs.php phpstan.neon phpunit.xml .gitignore .editorconfig
+            -   run: rm -rf tests ecs.php phpstan.neon phpunit.xml .gitignore .editorconfig vendor/twig/twig/lib/Twig/Test vendor/twig/twig/src/Test
 
             # prefix and scope
             -   run: sh prefix-code.sh
@@ -45,7 +46,7 @@ jobs:
             -   run: cp -r build/target-repository/. .
 
             # clear the dev files
-            -   run: rm -rf build prefix-code.sh full-tool-build.sh scoper.php rector.php rector-local php-scoper.phar
+            -   run: rm -rf build prefix-code.sh scoper.php rector.php rector-local php-scoper.phar
 
             # setup git user
             -
