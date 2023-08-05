@@ -36,7 +36,8 @@
         }
     },
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "platform-check": false
     },
     "replace": {
         "symfony/polyfill-php72": "*",
