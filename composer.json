@@ -1,6 +1,6 @@
 {
     "name": "tomasvotruba/torch",
-    "license": "sponsorware",
+    "license": "fair",
     "description": "Smoke testing of TWIG templates",
     "bin": [
         "bin/torch",
