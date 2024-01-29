@@ -1,6 +1,6 @@
 {
     "name": "tomasvotruba/torch",
-    "license": "sponsorware",
+    "license": "MIT",
     "description": "Smoke testing of TWIG templates",
     "require": {
         "php": ">=7.2"
