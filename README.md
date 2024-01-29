@@ -16,8 +16,24 @@ composer require tomasvotruba/torch --dev
 
 ## Usage
 
-* @todo run on your TWIG files
-* @todo configure "extras"
+1. Create `torch.php` in your project root:
+
+```php
+use Twig\Environment;
+
+require_once __DIR__ . '/vendor/autoload.php';
+
+// create instance of Environment with everything needed for smoke render
+$environment = new Environment(...);
+
+return $environment;
+```
+
+2. Run torch your twig files directories:
+
+```php
+vendor/bin/torch run templates
+```
 
 <br>
 
