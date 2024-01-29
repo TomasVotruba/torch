@@ -14,10 +14,8 @@ use TomasVotruba\Torch\Config\StaticParameterProvider;
 use TomasVotruba\Torch\Contract\TwigEnvironmentDecoratorInterface;
 use TomasVotruba\Torch\Enum\ParameterName;
 use TomasVotruba\Torch\Exception\ShouldNotHappenException;
-use TomasVotruba\Torch\Helpers\PrivatesAccessor;
 use TomasVotruba\Torch\Twig\TolerantTwigEnvironmentFactory;
 use Twig\Environment;
-use Webmozart\Assert\Assert;
 
 /**
  * @api used in bin and tests

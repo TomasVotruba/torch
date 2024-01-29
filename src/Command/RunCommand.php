@@ -11,7 +11,6 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Throwable;
-use TomasVotruba\Torch\FileSystem\FileSystem;
 use TomasVotruba\Torch\FileSystem\TwigFileFinder;
 use TomasVotruba\Torch\Twig\TolerantTwigEnvironmentFactory;
 
