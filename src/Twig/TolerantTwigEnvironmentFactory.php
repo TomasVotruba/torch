@@ -62,7 +62,7 @@ final class TolerantTwigEnvironmentFactory
         // initialize to load extension set
         $isolatedEnvironment->getFunction('substr');
 
-        $overrideFunctions = StaticParameterProvider::get('overrideFunctions');
+        $overrideFunctions = StaticParameterProvider::get('overrideFunctions') ?? [];
 
         /** @var ExtensionSet $extensionSet */
         PrivatesAccessor::propertyClosure($extensionSet, 'functions', function (array $twigFunctions) use ($overrideFunctions) {
