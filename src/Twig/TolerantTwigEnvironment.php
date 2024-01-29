@@ -1,16 +1,14 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace TomasVotruba\Torch\Twig;
 
-use Symfony\Component\Form\FormView;
+use Torch202401\Symfony\Component\Form\FormView;
 use Twig\Environment;
 use Twig\Loader\LoaderInterface;
-use Twig\TwigFilter;
-use Twig\TwigFunction;
-use Webmozart\Assert\Assert;
-
+use Torch202401\Twig\TwigFilter;
+use Torch202401\Twig\TwigFunction;
+use Torch202401\Webmozart\Assert\Assert;
 /**
  * This class is a tolerant wrapper around Twig\Environment.
  *
@@ -22,45 +20,43 @@ use Webmozart\Assert\Assert;
  */
 final class TolerantTwigEnvironment
 {
-    public function __construct(
-        private readonly Environment $twigEnvironment,
-    ) {
+    /**
+     * @readonly
+     * @var \Twig\Environment
+     */
+    private $twigEnvironment;
+    public function __construct(Environment $twigEnvironment)
+    {
+        $this->twigEnvironment = $twigEnvironment;
     }
-
     /**
      * @param array<string, mixed> $context
      */
-    public function render(string $name, array $context = []): string
+    public function render(string $name, array $context = []) : string
     {
         // add dummy form view to allow simple renders
-        if (! isset($context['form'])) {
+        if (!isset($context['form'])) {
             $context['form'] = new FormView();
         }
-
         return $this->twigEnvironment->render($name, $context);
     }
-
     /**
      * @api used in tests
      */
-    public function getLoader(): LoaderInterface
+    public function getLoader() : LoaderInterface
     {
         return $this->twigEnvironment->getLoader();
     }
-
-    public function getFunction(string $functionName): TwigFunction
+    public function getFunction(string $functionName) : TwigFunction
     {
         $twigFunction = $this->twigEnvironment->getFunction($functionName);
         Assert::isInstanceOf($twigFunction, TwigFunction::class);
-
         return $twigFunction;
     }
-
-    public function getFilter(string $filterName): TwigFilter
+    public function getFilter(string $filterName) : TwigFilter
     {
         $twigFilter = $this->twigEnvironment->getFilter($filterName);
         Assert::isInstanceOf($twigFilter, TwigFilter::class);
-
         return $twigFilter;
     }
 }
