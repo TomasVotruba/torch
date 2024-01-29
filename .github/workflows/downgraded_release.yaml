@@ -3,10 +3,7 @@ name: Downgraded Release
 on:
     push:
         tags:
-            # avoid infinite looping, skip tags that ends with ".72"
-            # see https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#example-including-and-excluding-branches
             - '*'
-            - '!**.72'
 
 jobs:
     downgrade_release:
@@ -20,7 +17,7 @@ jobs:
             -
                 uses: "shivammathur/setup-php@v2"
                 with:
-                    php-version: 8.1
+                    php-version: 8.2
                     coverage: none
 
             # invoke patches
@@ -33,7 +30,6 @@ jobs:
             -   run: mkdir rector-local && composer require rector/rector --working-dir rector-local --ansi --dev
 
             # downgrade to PHP 7.2
-
             -   run: rector-local/vendor/bin/rector process src bin vendor --config build/rector-downgrade-php-72.php --ansi
 
             # clear the dev files
@@ -53,7 +49,8 @@ jobs:
                 run: |
                     git config user.email "action@github.com"
                     git config user.name "GitHub Action"
-            # publish to the same repository with a new tag
+
+            # publish to the same repository with same tag
             # see https://tomasvotruba.com/blog/how-to-release-php-81-and-72-package-in-the-same-repository/
             -
                 name: "Tag Downgraded Code"
@@ -61,5 +58,7 @@ jobs:
                     # separate a "git add" to add untracked (new) files too
                     git add --all
                     git commit -m "release PHP 7.2 downgraded"
-                    git tag "${GITHUB_REF#refs/tags/}.72"
-                    git push origin "${GITHUB_REF#refs/tags/}.72"
+
+                    # force push tag, so there is only 1 version
+                    git tag "${GITHUB_REF#refs/tags/}" --force
+                    git push origin "${GITHUB_REF#refs/tags/}" --force
