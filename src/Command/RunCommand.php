@@ -50,7 +50,7 @@ final class RunCommand extends Command
         }
 
         // clear cache, as the files do not override if tag parser changes
-        FileSystem::deleteDirectory($this->cacheDirectory);
+        \Nette\Utils\FileSystem::delete($this->cacheDirectory);
 
         $invalidFiles = [];
 
