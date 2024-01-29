@@ -7,7 +7,7 @@
         "bin/torch.php"
     ],
     "require": {
-        "php": "^8.2",
+        "php": "^8.1",
         "illuminate/container": "^10.42",
         "nette/utils": "^3.0|^4.0",
         "symfony/console": "^6.0|^7.0",
