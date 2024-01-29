@@ -31,15 +31,13 @@ final class TorchContainerFactory
         // console
         $container->singleton(Application::class, static function (Container $container): Application {
             $application = new Application('Torch', '1.0');
+
             $runCommand = $container->make(RunCommand::class);
             $application->add($runCommand);
 
-            // keep only relevant commands
-            PrivatesAccessor::propertyClosure($application, 'commands', function (array $commands) {
-                unset($commands['help']);
-                unset($commands['completion']);
-                return $commands;
-            });
+            $application->get('help')->setHidden();
+            $application->get('completion')->setHidden();
+            $application->get('list')->setHidden();
 
             return $application;
         });
