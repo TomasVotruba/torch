@@ -7,8 +7,13 @@ use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use TomasVotruba\Torch\DependencyInjection\TorchContainerFactory;
 
-// local repository
-require_once __DIR__ . '/../vendor/autoload.php';
+if (file_exists(__DIR__ . '/../../../../vendor/autoload.php')) {
+    // A. dev repository
+    require_once __DIR__ . '/../../../../vendor/autoload.php';
+} else {
+    // B. local repository
+    require_once __DIR__ . '/../vendor/autoload.php';
+}
 
 $torchContainerFactory = new TorchContainerFactory();
 $container = $torchContainerFactory->create();
