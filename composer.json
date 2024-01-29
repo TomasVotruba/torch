@@ -38,14 +38,7 @@
         }
     },
     "config": {
-        "sort-packages": true,
-        "platform-check": false
-    },
-    "replace": {
-        "symfony/polyfill-ctype": "*",
-        "symfony/polyfill-intl-grapheme": "*",
-        "symfony/polyfill-intl-normalizer": "*",
-        "symfony/polyfill-mbstring": "*"
+        "sort-packages": true
     },
     "scripts": {
         "phpstan": "vendor/bin/phpstan analyse --ansi",
