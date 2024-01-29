@@ -1,6 +1,6 @@
 {
     "name": "tomasvotruba/torch",
-    "license": "fair",
+    "license": "MIT",
     "description": "Smoke testing of TWIG templates",
     "bin": [
         "bin/torch",
