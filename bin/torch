@@ -1,4 +1,5 @@
 #!/usr/bin/php
-<?php
+<?php 
+namespace Torch202401;
 
 require __DIR__ . '/torch.php';
