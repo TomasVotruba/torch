@@ -91,8 +91,6 @@ final class TolerantTwigEnvironmentFactory
      */
     private function decorateTolerantFiltersAndFunctions(Environment $twigEnvironment): void
     {
-        $twigEnvironment->addExtension(new FormExtension());
-
         // after we fetch these, the staging must be reset to the twig environment is not locked
         $functions = $twigEnvironment->getFunctions();
         $filters = $twigEnvironment->getFilters();
