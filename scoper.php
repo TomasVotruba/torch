@@ -7,7 +7,7 @@ return [
     'prefix' => 'Torch' . date('Ym'),
     'expose-constants' => ['#^SYMFONY\_[\p{L}_]+$#'],
     // https://github.com/humbug/php-scoper/blob/main/docs/configuration.md#exposing-classes
-    'exclude-namespaces' => ['#^TomasVotruba\\\\Torch#'],
+    'exclude-namespaces' => ['#^TomasVotruba\\\\Torch#', '#^Twig\\\\#'],
     'exclude-classes' => [
         'Twig\Environment',
         'PHPUnit\Framework\TestCase',
