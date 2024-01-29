@@ -44,7 +44,7 @@ final class RunCommand extends Command
 
         $tolerantTwigEnvironment = $this->tolerantTwigEnvironmentFactory->create($twigFiles);
 
-        if ($this->symfonyStyle->isDebug()) {
+        if (! $this->symfonyStyle->isDebug()) {
             $this->symfonyStyle->progressStart(count($twigFiles));
         }
 
