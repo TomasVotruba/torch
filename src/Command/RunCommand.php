@@ -34,7 +34,7 @@ final class RunCommand extends Command
         $this->setName('run');
         $this->setDescription('Render twig templates to test their values out');
 
-        $this->addArgument('paths', InputArgument::REQUIRED);
+        $this->addArgument('paths', InputArgument::REQUIRED | InputArgument::IS_ARRAY, 'Path to twig directories to smoke test');
         $this->addOption('exclude-file', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED);
     }
 
