@@ -29,6 +29,20 @@ $environment = new Environment(...);
 return $environment;
 ```
 
+In this file, you can override existing twig functions:
+
+```php
+// override twig functions you need
+StaticParameterProvider::set('overrideFunctions', [
+    // provide static value for dynamic function
+    'baseTemplate' => function () {
+        return DummyTheme::LAYOUT_NAME;
+    },
+]);
+```
+
+<br>
+
 2. Run torch your twig files directories:
 
 ```php

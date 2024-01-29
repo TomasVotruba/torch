@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace TomasVotruba\Torch\Twig;
 
 use Nette\Utils\FileSystem;
+use TomasVotruba\Torch\Config\StaticParameterProvider;
 use TomasVotruba\Torch\Contract\TwigEnvironmentDecoratorInterface;
 use TomasVotruba\Torch\Helpers\PrivatesAccessor;
 use TomasVotruba\Torch\Twig\TokenParser\TolerantFormThemeTokenParser;
@@ -14,6 +15,7 @@ use Twig\Extension\StagingExtension;
 use Twig\ExtensionSet;
 use Twig\Loader\ArrayLoader;
 use Twig\Loader\ChainLoader;
+use Twig\TwigFunction;
 
 /**
  * @see \TomasVotruba\Torch\Tests\Twig\TolerantTwigEnvironmentTest
@@ -44,7 +46,6 @@ final class TolerantTwigEnvironmentFactory
 
         // add tolerant functions and filters
         $this->decorateTolerantFiltersAndFunctions($isolatedEnvironment);
-
         $this->decorateTolerantFormThemeTag($isolatedEnvironment);
 
         // required to have tolerant twig, that have no variables
@@ -54,6 +55,26 @@ final class TolerantTwigEnvironmentFactory
         foreach ($this->twigEnvironmentDecorators as $twigEnvironmentDecorator) {
             $twigEnvironmentDecorator->decorate($isolatedEnvironment);
         }
+
+        // remove overriden function names
+        $extensionSet = PrivatesAccessor::getPrivateProperty($isolatedEnvironment, 'extensionSet');
+
+        // initialize to load extension set
+        $isolatedEnvironment->getFunction('substr');
+
+        $overrideFunctions = StaticParameterProvider::get('overrideFunctions');
+
+        /** @var ExtensionSet $extensionSet */
+        PrivatesAccessor::propertyClosure($extensionSet, 'functions', function (array $twigFunctions) use ($overrideFunctions) {
+            foreach ($twigFunctions as $functionName => $twigFunction) {
+                $overrideFunction = $overrideFunctions[$functionName] ?? null;
+                if ($overrideFunction) {
+                    $twigFunctions[$functionName] = new TwigFunction($functionName, $overrideFunction);
+                }
+            }
+
+            return $twigFunctions;
+        });
 
         return new TolerantTwigEnvironment($isolatedEnvironment);
     }
