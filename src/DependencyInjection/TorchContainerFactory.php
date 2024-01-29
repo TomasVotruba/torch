@@ -13,6 +13,7 @@ use TomasVotruba\Torch\Command\RunCommand;
 use TomasVotruba\Torch\Config\StaticParameterProvider;
 use TomasVotruba\Torch\Contract\TwigEnvironmentDecoratorInterface;
 use TomasVotruba\Torch\Enum\ParameterName;
+use TomasVotruba\Torch\Exception\ShouldNotHappenException;
 use TomasVotruba\Torch\Helpers\PrivatesAccessor;
 use TomasVotruba\Torch\Twig\TolerantTwigEnvironmentFactory;
 use Twig\Environment;
@@ -48,7 +49,9 @@ final class TorchContainerFactory
         // add app's twig environment
         $container->singleton(Environment::class, function (): Environment {
             $torchConfigFilePath = getcwd() . '/torch.php';
-            Assert::fileExists($torchConfigFilePath);
+            if (! file_exists($torchConfigFilePath)) {
+                throw new ShouldNotHappenException('Create local "torch.php" config first that return Environment instance"');
+            }
 
             return require $torchConfigFilePath;
         });
