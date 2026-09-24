@@ -1,5 +1,8 @@
 # Torch
 
+> [!WARNING]
+> **This package is deprecated and no longer maintained or updated.** The repository is archived.
+
 ...when you need to cover your Twig with smoke.
 
 [![Downloads](https://img.shields.io/packagist/dt/tomasvotruba/torch.svg?style=flat-square)](https://packagist.org/packages/tomasvotruba/torch/stats)
